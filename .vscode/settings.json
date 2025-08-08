@@ -1,0 +1,24 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5433,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "EA",
+      "database": "postgres",
+      "username": "postgres"
+    },
+    {
+      "previewLimit": 50,
+      "server": "192.168.33.1",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "hivemind_dev",
+      "username": "rails",
+      "password": "rails",
+      "database": "hivemind_dev"
+    }
+  ]
+}

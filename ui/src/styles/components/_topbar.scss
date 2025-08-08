@@ -1,0 +1,186 @@
+/* TopBar Component Styles */
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.topbar {
+  background-color: $slate-900;
+  padding: $spacing-4 0;
+  box-shadow: $shadow-lg;
+  position: relative; // Added for mobile menu positioning
+
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 $spacing-4;
+    @include flex-between;
+
+    @include mobile-up {
+      padding: 0 $spacing-6;
+    }
+  }
+
+  &__brand {
+    color: white;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    text-decoration: none;
+    @include hover-opacity;
+  }
+
+  // Desktop Navigation
+  &__nav {
+    display: none;
+
+    @include desktop-up {
+      display: flex;
+      gap: $spacing-8;
+    }
+
+    &-link {
+      color: $gray-300;
+      text-decoration: none;
+      padding: $spacing-2 $spacing-3;
+      border-radius: $radius-md;
+      transition: $transition-base;
+
+      &:hover {
+        color: white;
+        background-color: $slate-800;
+      }
+
+      &--active {
+        color: white;
+        background-color: $blue-600;
+      }
+    }
+  }
+
+  // Desktop Dropdown
+  &__dropdown {
+    position: relative;
+
+    &:hover &-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+
+  &__dropdown-button {
+    @include flex-center;
+    gap: $spacing-1;
+    color: $gray-300;
+    background: none;
+    border: none;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-md;
+    transition: $transition-base;
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+      background-color: $slate-800;
+    }
+  }
+
+  &__dropdown-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: $spacing-1;
+  }
+
+  &__dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: $spacing-2;
+    min-width: 10rem;
+    background-color: white;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-xl;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 50;
+    padding: $spacing-2 0;
+  }
+
+  &__dropdown-item {
+    display: block;
+    padding: $spacing-2 $spacing-4;
+    color: $gray-700;
+    text-decoration: none;
+    transition: $transition-base;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-900;
+    }
+  }
+
+  // Mobile Menu Button
+  &__mobile-toggle {
+    @include button-base;
+    background: none;
+    color: white;
+    padding: $spacing-2;
+
+    @include desktop-up {
+      display: none;
+    }
+
+    &:hover {
+      background-color: $slate-800;
+    }
+  }
+
+  // Mobile Menu
+  &__mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: $slate-800;
+    border-top: 1px solid $slate-700;
+    padding: $spacing-4;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+
+    &--open {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @include desktop-up {
+      display: none !important;
+    }
+  }
+
+  &__mobile-nav {
+    @include flex-column;
+    gap: $spacing-2;
+
+    &-link {
+      color: $gray-300;
+      text-decoration: none;
+      padding: $spacing-3 $spacing-4;
+      border-radius: $radius-md;
+      transition: $transition-base;
+
+      &:hover {
+        color: white;
+        background-color: $slate-700;
+      }
+
+      &--active {
+        color: white;
+        background-color: $blue-600;
+      }
+    }
+  }
+}

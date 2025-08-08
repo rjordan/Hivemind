@@ -1,0 +1,70 @@
+/* Design System Variables */
+
+/* Colors */
+$slate-900: #0f172a;
+$slate-800: #1e293b;
+$slate-700: #334155;
+$slate-600: #475569;
+$gray-900: #111827;
+$gray-700: #374151;
+$gray-600: #4b5563;
+$gray-400: #9ca3af;
+$gray-300: #d1d5db;
+$gray-200: #e5e7eb;
+$gray-100: #f3f4f6;
+$blue-800: #1e40af;
+$blue-600: #2563eb;
+$blue-500: #3b82f6;
+$blue-400: #60a5fa;
+$blue-300: #93c5fd;
+$purple-600: #8b5cf6;
+$red-900: #7f1d1d;
+$red-600: #dc2626;
+$red-400: #f87171;
+$red-200: #fecaca;
+$red-50: #fef2f2;
+
+/* Typography */
+$font-size-xs: 0.75rem;    // 12px
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-lg: 1.125rem;   // 18px
+$font-size-xl: 1.25rem;    // 20px
+$font-size-2xl: 1.5rem;    // 24px
+$font-size-4xl: 2.25rem;   // 36px
+
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+/* Spacing */
+$spacing-1: 0.25rem;   // 4px
+$spacing-2: 0.5rem;    // 8px
+$spacing-3: 0.75rem;   // 12px
+$spacing-4: 1rem;      // 16px
+$spacing-5: 1.25rem;   // 20px
+$spacing-6: 1.5rem;    // 24px
+$spacing-8: 2rem;      // 32px
+$spacing-12: 3rem;     // 48px
+
+/* Border Radius */
+$radius-md: 0.375rem;  // 6px
+$radius-lg: 0.5rem;    // 8px
+$radius-xl: 0.75rem;   // 12px
+$radius-full: 9999px;
+
+/* Shadows */
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+/* Transitions */
+$transition-base: all 0.2s ease;
+$transition-slow: all 0.3s ease;
+
+/* Breakpoints */
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+/* Container */
+$container-max-width: 80rem; // 1280px
