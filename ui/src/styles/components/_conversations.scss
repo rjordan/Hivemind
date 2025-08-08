@@ -41,6 +41,53 @@
     max-width: 40rem;
   }
 
+  // New Conversation Button
+  &__new-button {
+    @include button-base;
+    background: linear-gradient(135deg, $blue-600 0%, $purple-600 100%);
+    color: white;
+    padding: $spacing-4 $spacing-8;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+    margin-bottom: $spacing-8;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, $blue-700 0%, $purple-700 100%);
+      box-shadow: $shadow-xl;
+      transform: translateY(-2px);
+
+      &:before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    // Icon (if we want to add one later)
+    &::after {
+      content: '✨';
+      margin-left: $spacing-2;
+    }
+  }
+
   // Loading State
   &__loading {
     @include flex-center;

@@ -1,49 +1,80 @@
-import { createEffect, createResource, For } from "solid-js";
-// import config from './config.json';
+import { createEffect, createSignal, For } from "solid-js";
+import { createGraphQLClient, gql } from "@solid-primitives/graphql";
+import config from './config.json';
 
-const config = {
-  apiBaseUrl: "http://localhost:3001"
-}
-
-const fetchConversations = async () => {
-  console.log('Fetching conversations from:', config.apiBaseUrl);
-  const response = await fetch(`${config.apiBaseUrl}/api/conversations`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch stories');
+const GET_CONVERSATIONS = gql`
+  query {
+    conversations {
+      edges {
+        node {
+          id
+          title
+          assistant
+          scenario
+          initialMessage
+          createdAt
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
   }
-  return response.json();
-}
+`
+
+type Conversation = {
+  id: string;
+  title: string;
+  assistant: string;
+  scenario: string;
+  initialMessage: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ConversationConnection = {
+  conversations: {
+    edges: { node: Conversation }[];
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor: string;
+      endCursor: string;
+    };
+  };
+};
 
 const Conversations = () => {
-  const [conversations, { mutate, refetch }] = createResource({}, fetchConversations)
+  const graphqlClient = createGraphQLClient(`${config.apiBaseUrl}/graphql`, {
+    headers: {
+      Authorization: `Bearer 1234`
+    }
+  });
+  const [conversations, setConversations] = createSignal([]);
+  const [conversationResult] = graphqlClient<ConversationConnection>(GET_CONVERSATIONS);
 
   createEffect(() => {
-    console.log('Conversations loaded:', conversations());
+    // Track the cursor to allow pagination
+    setConversations((prev) => [
+      ...prev,
+      ...(conversationResult()?.conversations.edges.map((e) => e.node) || []),
+    ]);
   })
 
   return (
     <div class="conversations">
       <div class="conversations__header">
-        <h1 class="conversations__title">💬 Conversations</h1>
+        <h1 class="conversations__title">Conversations</h1>
         <p class="conversations__subtitle">Manage and explore your AI conversations</p>
       </div>
 
-      {conversations.loading && (
-        <div class="conversations__loading">
-          Loading conversations...
-        </div>
-      )}
-
-      {conversations.error && (
-        <div class="conversations__error">
-          <div class="conversations__error-icon">⚠️</div>
-          <div class="conversations__error-message">Error loading conversations</div>
-          <div class="conversations__error-description">{conversations.error.message}</div>
-          <button class="conversations__error-retry" onClick={() => refetch()}>
-            Try Again
-          </button>
-        </div>
-      )}
+      <button class="conversations__new-button">
+        Start New Conversation
+      </button>
 
       {/* Card Grid View */}
       <div class="conversations__grid">

@@ -1,0 +1,69 @@
+@BASE_URL = http://127.0.0.1:3000
+@TOKEN = <TOKEN HERE>
+
+### Conversation List
+POST {{BASE_URL}}/graphql
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+query {
+  heartbeat
+}
+
+### Current User
+POST {{BASE_URL}}/graphql
+Content-Type: application/json
+X-Request-Type: GraphQL
+Authorization: Bearer {{TOKEN}}
+
+query {
+  currentUser {
+    id
+    email
+    username
+    personas {
+      id
+      name
+      description
+    }
+    characters {
+      id
+      name
+      alternateNames
+      tags
+    }
+    conversations {
+      id
+      title
+      scenario
+    }
+  }
+}
+
+### Conversation List
+POST {{BASE_URL}}/graphql
+Content-Type: application/json
+X-Request-Type: GraphQL
+Authorization: Bearer {{TOKEN}}
+
+query {
+  conversations {
+    edges {
+      node {
+        id
+        title
+        assistant
+        scenario
+        initialMessage
+        createdAt
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

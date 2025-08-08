@@ -69,4 +69,9 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Clean the database between tests
+  config.before(:each) do
+    ActiveRecord::Base.connection.truncate_tables(*ActiveRecord::Base.connection.tables)
+  end
 end
