@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@solidjs/testing-library';
-import Conversations from '../Converstations';
+import Conversations from '../Conversations';
 vi.mock('../UserContext');
 import { AuthProvider } from '../UserContext';
 
@@ -43,7 +43,7 @@ describe('Conversations (Unified)', () => {
 
   describe('Structure & Basic Render', () => {
     it('exports component and renders title', async () => {
-      const module = await import('../Converstations');
+      const module = await import('../Conversations');
       expect(module.default).toBeDefined();
       render(() => <Conversations />, { wrapper: Wrapper });
       expect(screen.getByText('Conversations')).toBeInTheDocument();

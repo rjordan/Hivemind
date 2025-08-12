@@ -9,7 +9,7 @@ module Resolvers
     def resolve
       raise GraphQL::ExecutionError, "Authentication required" unless context[:current_user]
 
-      context[:current_user].conversations
+      context[:current_user].conversations.includes(:persona, :characters, :conversation_facts)
     end
   end
 end

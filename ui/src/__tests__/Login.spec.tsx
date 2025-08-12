@@ -81,22 +81,22 @@ describe('Login Component', () => {
       mockAlert.mockClear();
       mockLocation();
       render(() => <Login clientId="test_client_id" />, { wrapper: Wrapper });
-  fireEvent.click(screen.getByText(/Sign in with GitHub/));
-  expect(mockAlert).toHaveBeenCalled();
-  expect(window.location.href).toBe('http://localhost:5173/');
+      fireEvent.click(screen.getByText(/Sign in with GitHub/));
+      expect(mockAlert).toHaveBeenCalled();
+      expect(window.location.href).toBe('http://localhost:5173/');
     });
   });
 
   describe('Mock Login', () => {
-  it('calls mock endpoint, invokes login, and navigates home', async () => {
+    it('calls mock endpoint, invokes login, and navigates home', async () => {
       const mockToken = 'mock_jwt_token';
       mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve({ token: mockToken }) });
       render(() => <Login />, { wrapper: Wrapper });
       fireEvent.click(screen.getByText(/Mock Login/));
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/auth/mock/login', expect.objectContaining({ method: 'POST' }));
-    expect(loginSpy).toHaveBeenCalledWith(mockToken, undefined);
-  expect(navigateSpy).toHaveBeenCalledWith('/');
+        expect(loginSpy).toHaveBeenCalledWith(mockToken, undefined);
+        expect(navigateSpy).toHaveBeenCalledWith('/');
       });
     });
     it('handles missing token', async () => {
@@ -109,7 +109,7 @@ describe('Login Component', () => {
       });
     });
     it('handles failed mock login', async () => {
-      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => { });
       mockFetch.mockRejectedValueOnce(new Error('Network error'));
       render(() => <Login />, { wrapper: Wrapper });
       fireEvent.click(screen.getByText(/Mock Login/));

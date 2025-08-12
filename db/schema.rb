@@ -16,6 +16,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
   enable_extension "pgcrypto"
   enable_extension "uuid-ossp"
 
+  create_table "character_conversations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_id", null: false
+    t.uuid "conversation_id", null: false
+    t.boolean "present", default: true
+    t.index ["character_id"], name: "index_character_conversations_on_character_id"
+    t.index ["conversation_id", "character_id"], name: "index_characters_conversations_on_conversation_and_user", unique: true
+    t.index ["conversation_id"], name: "index_character_conversations_on_conversation_id"
+  end
+
   create_table "character_traits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "character_id", null: false
     t.string "trait_type", limit: 50
@@ -30,20 +39,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.string "name"
     t.string "alternate_names", default: [], array: true
     t.string "tags", limit: 50, default: [], array: true
+    t.string "default_model", default: "llama3.2", null: false
+    t.boolean "public", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["alternate_names"], name: "index_characters_on_alternate_names", using: :gin
     t.index ["name"], name: "index_characters_on_name"
     t.index ["tags"], name: "index_characters_on_tags", using: :gin
     t.index ["user_id"], name: "index_characters_on_user_id"
-  end
-
-  create_table "characters_conversations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "conversation_id", null: false
-    t.uuid "character_id", null: false
-    t.index ["character_id"], name: "index_characters_conversations_on_character_id"
-    t.index ["conversation_id", "character_id"], name: "index_characters_conversations_on_conversation_and_user", unique: true
-    t.index ["conversation_id"], name: "index_characters_conversations_on_conversation_id"
   end
 
   create_table "conversation_facts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -61,6 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.boolean "assistant", default: true
     t.text "scenario", null: false
     t.text "initial_message"
+    t.string "converstation_model", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["persona_id"], name: "index_conversations_on_persona_id"
@@ -88,10 +92,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.index ["github_id"], name: "index_users_on_github_id", unique: true
   end
 
+  add_foreign_key "character_conversations", "characters"
+  add_foreign_key "character_conversations", "conversations"
   add_foreign_key "character_traits", "characters"
   add_foreign_key "characters", "users"
-  add_foreign_key "characters_conversations", "characters"
-  add_foreign_key "characters_conversations", "conversations"
   add_foreign_key "conversation_facts", "conversations"
   add_foreign_key "conversations", "personas"
   add_foreign_key "personas", "users"
