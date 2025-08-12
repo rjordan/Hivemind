@@ -1,15 +1,29 @@
 Rails.application.routes.draw do
+  # API routes
   post "/graphql", to: "graphql#execute"
+
+  # Auth API routes
+  post "/auth/github/callback", to: "auth#github_callback"
+  get "/auth/me", to: "auth#me"
+
+  # Development-only mock auth (remove in production)
+  if Rails.env.development? || Rails.env.test?
+    post "/auth/mock/login", to: "auth#mock_login"
+  end
+
   namespace :api do
     resources :conversations
   end
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Catch-all route for SPA (must be last)
+  # This serves the frontend for all non-API routes
+  get "*path", to: "application#frontend", constraints: ->(req) {
+    !req.xhr? && req.format.html?
+  }
+
+  # Root route
+  root "application#frontend"
 end

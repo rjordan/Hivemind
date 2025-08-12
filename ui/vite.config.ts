@@ -11,4 +11,12 @@ export default defineConfig({
     outDir: '../public',
     emptyOutDir: false,
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './vitest.setup.ts',
+    testTransformMode: {
+      web: ['tsx', 'ts'],
+    },
+  },
 });

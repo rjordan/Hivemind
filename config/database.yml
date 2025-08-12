@@ -15,12 +15,12 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: <%= ENV.fetch("HIVEMIND_DB_HOST") { "192.168.33.1" } %>
+  host: <%= ENV.fetch("HIVEMIND_DB_HOST") { "localhost" } %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV.fetch("HIVEMIND_DB_USER") { "rails" } %>
-  password: <%= ENV.fetch("HIVEMIND_DB_PASSWORD") { "rails" } %>
+  username: <%= ENV.fetch("HIVEMIND_DB_USER") { "postgres" } %>
+  password: <%= ENV.fetch("HIVEMIND_DB_PASSWORD") { "password" } %>
   # Schema search path. The server defaults to $user,public
   #schema_search_path: myapp,sharedapp,public
   # Minimum log levels, in increasing order:

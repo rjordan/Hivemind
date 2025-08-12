@@ -1,5 +1,5 @@
 @BASE_URL = http://127.0.0.1:3000
-@TOKEN = <TOKEN HERE>
+@TOKEN = FAKE_TOKEN
 
 ### Conversation List
 POST {{BASE_URL}}/graphql
@@ -20,7 +20,7 @@ query {
   currentUser {
     id
     email
-    username
+    name
     personas {
       id
       name

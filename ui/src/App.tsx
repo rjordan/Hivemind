@@ -1,27 +1,22 @@
-import './App.scss';
+import './App.scss'
 
-import { Component, ErrorBoundary, Suspense } from 'solid-js';
+import { Component, ErrorBoundary as _ErrorBoundary, Suspense } from 'solid-js'
 
-import TopBar from './Topbar';
-import Home from "./Home";
-import Conversations from './Converstations';
-import { Router, Route } from '@solidjs/router';
+import TopBar from './Topbar'
+import { AuthProvider } from './UserContext'
+import { Routes } from './Routes'
 
 const App: Component = () => {
-
   return (
-    <main class="min-h-screen bg-gray-100 hivemind-app">
-      <TopBar />
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+    <AuthProvider>
+      <main class="min-h-screen bg-gray-100 hivemind-app">
+        <TopBar />
         <Suspense fallback={<div>Loading...</div>}>
-          <Router>
-            <Route path="/" component={Home} />
-            <Route path="/conversations" component={Conversations} />
-          </Router>
+          <Routes />
         </Suspense>
-      </ErrorBoundary>
-    </main>
-  );
-};
+      </main>
+    </AuthProvider>
+  )
+}
 
-export default App;
+export default App

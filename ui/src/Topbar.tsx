@@ -1,7 +1,11 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
+import { useAuth } from './UserContext';
+import { useLocation } from "@solidjs/router";
+import { isAuthenticated } from './UserContext';
 
 const TopBar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false);
+  const [authStore, { logout }] = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen());
@@ -11,27 +15,45 @@ const TopBar = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleSignOut = (e: Event) => {
+    e.preventDefault();
+    logout();
+    closeMobileMenu();
+  };
+
+  const handleLogin = (e: Event) => {
+    e.preventDefault();
+    window.location.href = '/login';
+    closeMobileMenu();
+  };
+
   return (
     <nav class="topbar">
       <div class="topbar__container">
         <a href="/" class="topbar__brand">🧠 Hivemind</a>
 
         <div class="topbar__nav">
-          <a href="/conversations" class="topbar__nav-link topbar__nav-link--active">Conversations</a>
-          <a href="#" class="topbar__nav-link">Characters</a>
-          <a href="#" class="topbar__nav-link">Profiles</a>
-          <div class="topbar__dropdown">
-            <button class="topbar__nav-link topbar__dropdown-button">
-              Settings
-              <svg class="topbar__dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
+          <Show when={isAuthenticated()} fallback={
+            <button onClick={handleLogin} class="topbar__nav-link">
+              Login
             </button>
-            <div class="topbar__dropdown-menu">
-              <a href="#" class="topbar__dropdown-item">👤 Profile</a>
-              <a href="#" class="topbar__dropdown-item">🚪 Sign Out</a>
+          }>
+            <a href="/conversations" class="topbar__nav-link">Conversations</a>
+            <a href="#" class="topbar__nav-link">Characters</a>
+            <a href="#" class="topbar__nav-link">Profiles</a>
+            <div class="topbar__dropdown">
+              <button class="topbar__nav-link topbar__dropdown-button">
+                {authStore?.user?.name || 'User'}
+                <svg class="topbar__dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <div class="topbar__dropdown-menu">
+                <a href="#" class="topbar__dropdown-item">👤 Profile</a>
+                <a href="#" class="topbar__dropdown-item" onClick={handleSignOut}>🚪 Sign Out</a>
+              </div>
             </div>
-          </div>
+          </Show>
         </div>
 
         <button
@@ -56,12 +78,18 @@ const TopBar = () => {
       {/* Mobile menu */}
       <div class={`topbar__mobile-menu ${isMobileMenuOpen() ? 'topbar__mobile-menu--open' : ''}`}>
         <div class="topbar__mobile-nav">
-          <a href="/conversations" class="topbar__mobile-nav-link topbar__mobile-nav-link--active" onClick={closeMobileMenu}>💬 Conversations</a>
-          <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👥 Characters</a>
-          <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>📋 Profiles</a>
-          <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>⚙️ Settings</a>
-          <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👤 Profile</a>
-          <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>🚪 Sign Out</a>
+          <Show when={isAuthenticated()} fallback={
+            <button onClick={handleLogin} class="topbar__mobile-nav-link">
+              🔐 Login
+            </button>
+          }>
+            <a href="/conversations" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>💬 Conversations</a>
+            <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👥 Characters</a>
+            <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>📋 Profiles</a>
+            <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>⚙️ Settings</a>
+            <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👤 Profile</a>
+            <a href="#" class="topbar__mobile-nav-link" onClick={handleSignOut}>🚪 Sign Out</a>
+          </Show>
         </div>
       </div>
     </nav>

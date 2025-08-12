@@ -1,6 +1,7 @@
-import { createEffect, createSignal, For } from "solid-js";
-import { createGraphQLClient, gql } from "@solid-primitives/graphql";
-import config from './config.json';
+import { createEffect, createSignal, For, createMemo } from 'solid-js'
+import { createGraphQLClient, gql } from '@solid-primitives/graphql'
+import { useAuth } from './UserContext'
+import config from './config.json'
 
 const GET_CONVERSATIONS = gql`
   query {
@@ -48,21 +49,46 @@ type ConversationConnection = {
   };
 };
 
+
+function ConversationCard(story: Conversation) {
+  console.log(`Card: ${JSON.stringify(story)}`)
+  return <div class="conversations__card" data-id={story.id}>
+    <div class="conversations__card-header">
+      <h4>{story.title}</h4>
+    </div>
+    <div class="conversations__card-body">
+      <p class="conversations__card-description">{story.scenario}</p>
+      <div class="conversations__card-actions">
+        <button class="conversations__card-button">
+          Open Conversation →
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
 const Conversations = () => {
-  const graphqlClient = createGraphQLClient(`${config.apiBaseUrl}/graphql`, {
-    headers: {
-      Authorization: `Bearer 1234`
-    }
-  });
-  const [conversations, setConversations] = createSignal([]);
-  const [conversationResult] = graphqlClient<ConversationConnection>(GET_CONVERSATIONS);
+  const [authStore] = useAuth()
+  const [conversations, setConversations] = createSignal<Conversation[]>([])
+
+  // Re-create the GraphQL client whenever the auth token changes so the header stays in sync.
+  const graphqlClient = createMemo(() =>
+    createGraphQLClient(`${config.apiBaseUrl}/graphql`, {
+      headers: {
+        Authorization: `Bearer ${authStore.token || ''}`
+      }
+    })
+  )
+
+  // Execute the query using the current client (reacts to token changes)
+  const [conversationResult] = graphqlClient()<ConversationConnection>(GET_CONVERSATIONS)
 
   createEffect(() => {
     // Track the cursor to allow pagination
     setConversations((prev) => [
       ...prev,
       ...(conversationResult()?.conversations.edges.map((e) => e.node) || []),
-    ]);
+    ])
   })
 
   return (
@@ -79,26 +105,12 @@ const Conversations = () => {
       {/* Card Grid View */}
       <div class="conversations__grid">
         <For each={conversations()}>
-          {(story) => (
-            <div class="conversations__card" data-id={story.id}>
-              <div class="conversations__card-header">
-                <h4>{story.title}</h4>
-              </div>
-              <div class="conversations__card-body">
-                <p class="conversations__card-description">{story.scenario}</p>
-                <div class="conversations__card-actions">
-                  <button class="conversations__card-button">
-                    Open Conversation →
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          {(story) => <ConversationCard {...story} />}
         </For>
       </div>
 
     </div>
-  );
-};
+  )
+}
 
-export default Conversations;
+export default Conversations

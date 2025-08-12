@@ -12,7 +12,9 @@
 # Demo Data
 
 user = User.find_or_create_by!(email: "rjordan01@gmail.com") do |user|
-  user.username = "rjordan"
+  user.name = "Kent Jordan"
+  user.github_id = 24049
+  user.avatar_url = 'https://avatars.githubusercontent.com/u/24049?v=4'
 end
 
 persona = Persona.find_or_create_by!(name: "Kent") do |persona|

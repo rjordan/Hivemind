@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'validations' do
-    let(:user) { User.new(username: 'testuser', email: 'test@example.com') }
+    let(:user) { User.new(name: 'testuser', email: 'test@example.com') }
 
     it 'is valid with valid attributes' do
       expect(user).to be_valid
@@ -15,8 +15,8 @@ RSpec.describe User, type: :model do
     end
 
     it 'validates uniqueness of email' do
-      User.create!(username: 'user1', email: 'unique@example.com')
-      other_user = User.new(username: 'user2', email: 'unique@example.com')
+      User.create!(name: 'user1', email: 'unique@example.com')
+      other_user = User.new(name: 'user2', email: 'unique@example.com')
       expect(other_user).not_to be_valid
       expect(other_user.errors[:email]).to include("has already been taken")
     end
@@ -28,7 +28,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'associations' do
-    let(:user) { User.create!(username: 'user_assoc', email: 'assoc@example.com') }
+    let(:user) { User.create!(name: 'user_assoc', email: 'assoc@example.com') }
 
     it 'has many characters' do
       expect(user).to respond_to(:characters)
@@ -59,24 +59,17 @@ RSpec.describe User, type: :model do
 
   describe 'database constraints' do
     it 'has UUID as primary key' do
-      user = User.create!(username: 'db_test_user', email: 'db@example.com')
+      user = User.create!(name: 'db_test_user', email: 'db@example.com')
       expect(user.id).to be_present
       expect(user.id).to match(/\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/)
     end
 
-    it 'has unique index on username' do
-      User.create!(username: 'unique_user', email: 'test1@example.com')
-      expect {
-        User.create!(username: 'unique_user', email: 'test2@example.com')
-      }.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-
     it 'has unique index on email' do
-      User.create!(username: 'testuser1', email: 'unique_email@example.com')
+      User.create!(name: 'testuser1', email: 'unique_email@example.com')
       # Since Rails validates uniqueness at the application level first,
       # we get a validation error before hitting the database constraint
       expect {
-        User.create!(username: 'testuser2', email: 'unique_email@example.com')
+        User.create!(name: 'testuser2', email: 'unique_email@example.com')
       }.to raise_error(ActiveRecord::RecordInvalid, /Email has already been taken/)
     end
   end

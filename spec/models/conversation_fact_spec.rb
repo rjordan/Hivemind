@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ConversationFact, type: :model do
-  let(:user) { User.create!(username: 'fact_user', email: 'fact@example.com') }
+  let(:user) { User.create!(name: 'fact_user', email: 'fact@example.com') }
   let(:persona) { user.personas.create!(name: 'Test Persona', description: 'A test persona description') }
   let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
 

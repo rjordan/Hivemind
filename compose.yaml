@@ -1,0 +1,11 @@
+volumes:
+  db_data:
+services:
+  db:
+    image: postgis/postgis:17-master
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data

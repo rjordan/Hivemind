@@ -41,6 +41,12 @@ group :development, :test do
   gem "brakeman", require: false
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  # Load environment variables from .env file
+  gem "dotenv-rails"
+  # HTTP stubbing for external API calls in specs
+  gem 'webmock'
 end
 
 gem "graphql", "~> 2.5"
+gem "jwt"
+gem "httparty"

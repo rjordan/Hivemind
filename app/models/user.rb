@@ -4,4 +4,5 @@ class User < ApplicationRecord
   has_many :conversations, through: :personas
 
   validates :email, presence: true, uniqueness: true
+  validates :github_id, uniqueness: true, allow_nil: true
 end

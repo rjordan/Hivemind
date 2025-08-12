@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CharacterTrait, type: :model do
-  let(:user) { User.create!(username: 'trait_user', email: 'trait@example.com') }
+  let(:user) { User.create!(name: 'trait_user', email: 'trait@example.com') }
   let(:character) { user.characters.create!(name: 'Test Character') }
 
   describe 'validations' do

@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_172629) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
   enable_extension "uuid-ossp"
 
@@ -77,12 +78,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_172629) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "username", limit: 50, null: false
+    t.string "name", limit: 100, null: false
     t.string "email", limit: 100, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "github_id"
+    t.string "avatar_url"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["username"], name: "index_users_on_username", unique: true
+    t.index ["github_id"], name: "index_users_on_github_id", unique: true
   end
 
   add_foreign_key "character_traits", "characters"
