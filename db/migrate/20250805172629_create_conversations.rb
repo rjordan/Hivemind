@@ -7,7 +7,7 @@ class CreateConversations < ActiveRecord::Migration[8.0]
       t.boolean :assistant, default: true # Indicates if the conversation is with an assistant
       t.text :scenario, null: false
       t.text :initial_message, null: true
-      t.string :converstation_model, null: false
+      t.string :conversation_model, null: false
 
       t.timestamps
     end

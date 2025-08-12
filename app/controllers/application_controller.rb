@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     return nil unless token
 
     # Allow passing a fake token in dev
-    if Rails.env.development?
+    if Rails.env.development? || Rails.env.test?
       if token == 'FAKE_TOKEN'
         return @current_user ||= User.find_by(email: 'rjordan@pobox.com')
       end

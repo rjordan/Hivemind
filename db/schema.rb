@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.boolean "assistant", default: true
     t.text "scenario", null: false
     t.text "initial_message"
-    t.string "converstation_model", null: false
+    t.string "conversation_model", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["persona_id"], name: "index_conversations_on_persona_id"

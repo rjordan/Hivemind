@@ -32,6 +32,7 @@ RSpec.describe HivemindSchema, type: :request do
                 tags
                 assistant
                 initialMessage
+                conversationModel
                 createdAt
                 updatedAt
               }
@@ -55,7 +56,8 @@ RSpec.describe HivemindSchema, type: :request do
         tags: ["test"],
         assistant: true,
         initial_message: "Test Initial Message",
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -71,6 +73,7 @@ RSpec.describe HivemindSchema, type: :request do
               "tags" => ["test"],
               "assistant" => true,
               "initialMessage" => "Test Initial Message",
+              "conversationModel" => "llama3.2",
               "createdAt" => an_instance_of(String),
               "updatedAt" => an_instance_of(String)
             }
@@ -114,7 +117,8 @@ RSpec.describe HivemindSchema, type: :request do
         scenario: "First Scenario",
         tags: ["test", "first"],
         assistant: true,
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -124,7 +128,8 @@ RSpec.describe HivemindSchema, type: :request do
         scenario: "Second Scenario",
         tags: ["test", "second"],
         assistant: false,
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -165,7 +170,8 @@ RSpec.describe HivemindSchema, type: :request do
         Conversation.create!(
           title: "Conversation #{i}",
           scenario: "Scenario #{i}",
-          persona: persona
+          persona: persona,
+          conversation_model: 'llama3.2'
         )
       end
     end
@@ -249,7 +255,8 @@ RSpec.describe HivemindSchema, type: :request do
         title: "No Message Conversation",
         scenario: "No Message Scenario",
         persona: persona,
-        initial_message: nil
+        initial_message: nil,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -280,7 +287,8 @@ RSpec.describe HivemindSchema, type: :request do
         title: "Tagged Conversation",
         scenario: "Tagged Scenario",
         tags: ["work", "important", "meeting"],
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -289,7 +297,8 @@ RSpec.describe HivemindSchema, type: :request do
         title: "Untagged Conversation",
         scenario: "Untagged Scenario",
         tags: [],
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -325,7 +334,8 @@ RSpec.describe HivemindSchema, type: :request do
         title: "Special Characters: !@#$%^&*()",
         scenario: "Scenario with \"quotes\" and 'apostrophes'",
         initial_message: "Message with\nnewlines\tand\ttabs",
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -403,7 +413,8 @@ RSpec.describe HivemindSchema, type: :request do
         Conversation.create!(
           title: "Performance Test Conversation #{i}",
           scenario: "Performance Scenario #{i}",
-          persona: persona
+          persona: persona,
+          conversation_model: 'llama3.2'
         )
       end
     end
@@ -438,7 +449,9 @@ RSpec.describe HivemindSchema, type: :request do
       conv = Conversation.create!(
         title: "Conversation with Character",
         scenario: "Character Scenario",
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
+
       )
       conv.characters << character
       conv
@@ -448,7 +461,8 @@ RSpec.describe HivemindSchema, type: :request do
       conv = Conversation.create!(
         title: "Conversation with Facts",
         scenario: "Facts Scenario",
-        persona: persona
+        persona: persona,
+        conversation_model: 'llama3.2'
       )
       conv.conversation_facts.create!(fact: "Important fact")
       conv.conversation_facts.create!(fact: "Another fact")

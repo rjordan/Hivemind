@@ -5,6 +5,7 @@ class Types::ConversationType < Types::BaseObject
   field :assistant, Boolean, null: false
   field :scenario, String, null: false
   field :initial_message, String, null: true
+  field :conversation_model, String, null: false
   field :created_at, GraphQL::Types::ISO8601DateTime, null: false
   field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 

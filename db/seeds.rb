@@ -33,5 +33,5 @@ conversation = Conversation.find_or_create_by!(title: "Seraphima's Journey") do 
   conversation.tags = ["Fantasy", "Adventure"]
   conversation.scenario = "Seraphima embarks on a quest to find the lost city of Eldoria, facing magical creatures and ancient puzzles along the way."
   conversation.characters << character
-  conversation.converstation_model = "llama3.2"
+  conversation.conversation_model = "llama3.2"
 end

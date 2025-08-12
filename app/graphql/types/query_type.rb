@@ -27,8 +27,8 @@ module Types
     end
 
     field :conversations, resolver: Resolvers::ConversationsResolver
+    field :characters, resolver: Resolvers::CharactersResolver
     # field :users, resolver: Resolvers::UsersResolver
-    # field :characters, resolver: Resolvers::CharactersResolver
     # field :personas, resolver: Resolvers::PersonasResolver
     # field :user, resolver: Resolvers::UserResolver
     field :current_user, resolver: Resolvers::CurrentUserResolver
