@@ -1,30 +1,30 @@
-import { Component } from 'solid-js';
-import { useNavigate } from '@solidjs/router';
-import { useAuth } from './UserContext';
-import config from './config.json';
+import { Component } from 'solid-js'
+import { useNavigate } from '@solidjs/router'
+import { useAuth } from './UserContext'
+import config from './config.json'
 
 export const generateGitHubAuthUrl = (clientId: string, redirectUri: string, scope: string): string =>
-  `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+  `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
 
 type LoginProps = {
   clientId?: string; // test override
 };
 
 const Login: Component<LoginProps> = (props) => {
-  const [, { login }] = useAuth();
-  const navigate = useNavigate();
+  const [, { login }] = useAuth()
+  const navigate = useNavigate()
 
   const handleGitHubLogin = () => {
-    const clientId = props.clientId ?? import.meta.env.VITE_GITHUB_CLIENT_ID;
+    const clientId = props.clientId ?? import.meta.env.VITE_GITHUB_CLIENT_ID
     if (!clientId || clientId === 'test_client_id') {
-      alert('GitHub OAuth is not configured. Please set up your GitHub OAuth app and configure the environment variables. See AUTH_SETUP.md for instructions.');
-      return;
+      alert('GitHub OAuth is not configured. Please set up your GitHub OAuth app and configure the environment variables. See AUTH_SETUP.md for instructions.')
+      return
     }
 
-    const redirectUri = `${window.location.origin}/auth/callback`;
-    const scope = 'user:email';
-    window.location.href = generateGitHubAuthUrl(clientId, redirectUri, scope);
-  };
+    const redirectUri = `${window.location.origin}/auth/callback`
+    const scope = 'user:email'
+    window.location.href = generateGitHubAuthUrl(clientId, redirectUri, scope)
+  }
 
   const handleMockLogin = async () => {
     try {
@@ -33,28 +33,28 @@ const Login: Component<LoginProps> = (props) => {
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      })
 
       if (!response.ok) {
-        console.error('Mock login HTTP error', response.status, await response.text());
-        throw new Error('Mock login request failed');
+        console.error('Mock login HTTP error', response.status, await response.text())
+        throw new Error('Mock login request failed')
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (data?.token) {
-        await login(data.token, data.user);
-  // After successful mock login, redirect home for parity with OAuth flow
-  navigate('/');
+        await login(data.token, data.user)
+        // After successful mock login, redirect home for parity with OAuth flow
+        navigate('/')
       } else {
-        console.error('Mock login response missing token payload:', data);
-        throw new Error('No token received');
+        console.error('Mock login response missing token payload:', data)
+        throw new Error('No token received')
       }
     } catch (error) {
-      console.error('Mock login failed:', error);
-      alert('Mock login failed. Check console for details.');
+      console.error('Mock login failed:', error)
+      alert('Mock login failed. Check console for details.')
     }
-  };
+  }
 
   return (
     <div class="login">
@@ -94,7 +94,7 @@ const Login: Component<LoginProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

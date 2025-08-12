@@ -1,6 +1,6 @@
 import './App.scss'
 
-import { Component, ErrorBoundary as _ErrorBoundary, Suspense } from 'solid-js'
+import { Component, Suspense } from 'solid-js'
 
 import TopBar from './Topbar'
 import { AuthProvider } from './UserContext'

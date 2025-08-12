@@ -26,6 +26,9 @@ export default [
         URLSearchParams: 'readonly',
         Event: 'readonly',
         HTMLElement: 'readonly',
+        URL: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
         // Test globals
         global: 'readonly',
         // Vitest globals
@@ -34,28 +37,37 @@ export default [
         expect: 'readonly',
         vi: 'readonly',
         beforeEach: 'readonly',
-        afterEach: 'readonly'
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly'
       }
     },
     plugins: {
       '@typescript-eslint': typescript
     },
     rules: {
-      // Semicolon rules - only require where necessary
+  // Disallow semicolons (project style)
       'semi': ['error', 'never'],
 
       // Basic TypeScript rules
       '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
 
-      // Allow unused variables in specific cases
-      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+  // Turn off base rule (handled by TS variant)
+  'no-unused-vars': 'off',
 
       // General formatting
       'quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
       'indent': ['error', 2],
       'no-trailing-spaces': 'error',
       'eol-last': 'error'
+    }
+  }
+  ,
+  {
+    files: ['**/__tests__/**/*.{ts,tsx}', '**/__mocks__/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn'
     }
   }
 ]

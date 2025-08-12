@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@solidjs/testing-library'
 import TopBar from '../Topbar'
@@ -5,7 +6,7 @@ import TopBar from '../Topbar'
 // Use manual mock context
 vi.mock('../UserContext')
 import * as UserContextModule from '../UserContext'
-const { AuthProvider, mockAuthStore, mockAuthActions } = UserContextModule as any
+const { AuthProvider, mockAuthStore, mockAuthActions } = UserContextModule as unknown as { AuthProvider: (p: { children: import('solid-js').JSX.Element }) => import('solid-js').JSX.Element; mockAuthStore: any; mockAuthActions: { logout: { mockClear: () => void } } }
 
 // Helper render with provider
 const renderTopbar = () => render(() => (
@@ -73,7 +74,7 @@ describe('TopBar Component', () => {
 
     it('logout link calls logout and leaves unauthenticated UI after next render', () => {
       const utils = renderTopbar()
-  const signOut = screen.getAllByText('🚪 Sign Out')[0]
+      const signOut = screen.getAllByText('🚪 Sign Out')[0]
       fireEvent.click(signOut)
       expect(mockAuthActions.logout).toHaveBeenCalled()
       // Simulate logout state update

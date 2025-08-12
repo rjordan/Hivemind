@@ -1,6 +1,6 @@
-import { Component, JSX, Show } from 'solid-js';
-import { Navigate } from '@solidjs/router';
-import { useAuth } from './UserContext';
+import { Component, JSX, Show } from 'solid-js'
+import { Navigate } from '@solidjs/router'
+import { useAuth } from './UserContext'
 
 type PrivateRouteProps = {
   children: JSX.Element;
@@ -14,7 +14,7 @@ type PrivateRouteProps = {
  * 3. Unauthenticated -> redirect to /login
  */
 export const PrivateRoute: Component<PrivateRouteProps> = (props) => {
-  const [store] = useAuth();
+  const [store] = useAuth()
 
   return (
     <Show
@@ -30,7 +30,7 @@ export const PrivateRoute: Component<PrivateRouteProps> = (props) => {
         {props.children}
       </Show>
     </Show>
-  );
-};
+  )
+}
 
-export default PrivateRoute;
+export default PrivateRoute

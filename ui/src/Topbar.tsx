@@ -1,31 +1,31 @@
-import { createSignal, Show } from "solid-js";
-import { useAuth } from './UserContext';
-import { isAuthenticated } from './UserContext';
+import { createSignal, Show } from 'solid-js'
+import { useAuth } from './UserContext'
+import { isAuthenticated } from './UserContext'
 
 const TopBar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false);
-  const [authStore, { logout }] = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false)
+  const [authStore, { logout }] = useAuth()
 
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen());
-  };
+    setIsMobileMenuOpen(!isMobileMenuOpen())
+  }
 
   const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+    setIsMobileMenuOpen(false)
+  }
 
   const handleSignOut = (e: Event) => {
-    e.preventDefault();
-    logout();
-    closeMobileMenu();
-  };
+    e.preventDefault()
+    logout()
+    closeMobileMenu()
+  }
 
   const handleLogin = (e: Event) => {
-    e.preventDefault();
-    window.location.href = '/login';
-    closeMobileMenu();
-  };
+    e.preventDefault()
+    window.location.href = '/login'
+    closeMobileMenu()
+  }
 
   return (
     <nav class="topbar">
@@ -92,7 +92,7 @@ const TopBar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default TopBar;
+export default TopBar
