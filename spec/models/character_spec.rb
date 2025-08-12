@@ -43,7 +43,7 @@ RSpec.describe Character, type: :model do
 
     it 'has and belongs to many conversations' do
       expect(character).to respond_to(:conversations)
-      expect(Character.reflect_on_association(:conversations).macro).to eq(:has_and_belongs_to_many)
+      expect(Character.reflect_on_association(:conversations).macro).to eq(:has_many)
     end
 
     it 'has many traits' do
@@ -57,7 +57,7 @@ RSpec.describe Character, type: :model do
     end
 
     it 'can be associated with conversations' do
-      conversation = Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario')
+      conversation = Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2')
       character.conversations << conversation
       expect(character.conversations).to include(conversation)
       expect(conversation.characters).to include(character)
