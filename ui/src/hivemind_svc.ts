@@ -5,8 +5,8 @@ import type { ConversationsQuery, User, CharactersQuery } from './types'
 const HIVEMIND_API_URL = `${config.apiBaseUrl}/graphql`
 
 const GET_CONVERSATIONS = gql`
-  query {
-    conversations {
+  query ($limit: Int, $cursor: String) {
+    conversations(last: $limit, after: $cursor) {
       edges {
         node {
           id
@@ -29,8 +29,8 @@ const GET_CONVERSATIONS = gql`
 `
 
 const GET_CHARACTERS = gql`
-  query {
-    characters {
+  query ($includePublic: Boolean, $limit: Int, $cursor: String) {
+    characters(includePublic: $includePublic, last: $limit, after: $cursor) {
       edges {
         node {
           id
@@ -82,7 +82,7 @@ const GET_CURRENT_USER = gql`
   }
 `
 
-const sendGraphQLQuery = async (authToken: string | null, query: string) => {
+const sendGraphQLQuery = async (authToken: string | null, query: string, variables: unknown = {}) => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
@@ -91,7 +91,7 @@ const sendGraphQLQuery = async (authToken: string | null, query: string) => {
   const response = await fetch(HIVEMIND_API_URL, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ query: query }),
+    body: JSON.stringify({ query: query, variables: variables }),
   })
   console.debug(`GraphQL Response: ${response.status} ${response.statusText}`)
 
@@ -104,8 +104,8 @@ export const getCurrentUser = async (authToken: string | null): Promise<User | n
   return response.currentUser
 }
 
-export const getConversations = async (authToken: string | null): Promise<ConversationsQuery> => {
-  const response = await sendGraphQLQuery(authToken, GET_CONVERSATIONS)
+export const getConversations = async (authToken: string | null, limit: number = 50, cursor: string | null = null): Promise<ConversationsQuery> => {
+  const response = await sendGraphQLQuery(authToken, GET_CONVERSATIONS, { limit: limit, cursor: cursor })
   const conversations = response?.conversations ?? {
     edges: [],
     pageInfo: {
@@ -118,8 +118,8 @@ export const getConversations = async (authToken: string | null): Promise<Conver
   return { conversations }
 }
 
-export const getCharacters = async (authToken: string | null): Promise<CharactersQuery> => {
-  const response = await sendGraphQLQuery(authToken, GET_CHARACTERS)
+export const getCharacters = async (authToken: string | null, includePublic: boolean = false, limit: number = 50, cursor: string = null): Promise<CharactersQuery> => {
+  const response = await sendGraphQLQuery(authToken, GET_CHARACTERS, { includePublic, limit, cursor })
   const characters = response?.characters ?? {
     edges: [],
     pageInfo: {
