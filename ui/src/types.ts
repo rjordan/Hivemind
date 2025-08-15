@@ -19,6 +19,21 @@ export interface Conversation {
   updatedAt: string
 }
 
+interface CharacterTrait {
+  traitType: string
+  value: string
+}
+
+export interface Character {
+  id: string
+  name: string
+  alternateNames: string[]
+  tags: string[]
+  traits: CharacterTrait[]
+  createdAt: string
+  updatedAt: string
+}
+
 export interface PageInfo {
   hasNextPage: boolean
   hasPreviousPage: boolean
@@ -38,4 +53,8 @@ export interface Connection<T> {
 // Example query result shapes
 export interface ConversationsQuery {
   conversations: Connection<Conversation>
+}
+
+export interface CharactersQuery {
+  characters: Connection<Character>
 }

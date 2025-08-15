@@ -1,6 +1,6 @@
 import { gql } from '@solid-primitives/graphql'
 import config from './config.json'
-import type { ConversationsQuery, User } from './types'
+import type { ConversationsQuery, User, CharactersQuery } from './types'
 
 const HIVEMIND_API_URL = `${config.apiBaseUrl}/graphql`
 
@@ -14,6 +14,33 @@ const GET_CONVERSATIONS = gql`
           assistant
           scenario
           initialMessage
+          createdAt
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+`
+
+const GET_CHARACTERS = gql`
+  query {
+    characters {
+      edges {
+        node {
+          id
+          name
+          alternateNames
+          tags
+          traits {
+            traitType
+            value
+          }
           createdAt
           updatedAt
         }
@@ -89,4 +116,18 @@ export const getConversations = async (authToken: string | null): Promise<Conver
     },
   }
   return { conversations }
+}
+
+export const getCharacters = async (authToken: string | null): Promise<CharactersQuery> => {
+  const response = await sendGraphQLQuery(authToken, GET_CHARACTERS)
+  const characters = response?.characters ?? {
+    edges: [],
+    pageInfo: {
+      hasNextPage: false,
+      hasPreviousPage: false,
+      startCursor: '',
+      endCursor: '',
+    },
+  }
+  return { characters }
 }
