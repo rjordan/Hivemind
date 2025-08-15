@@ -69,7 +69,7 @@ RSpec.describe Character, type: :model do
   end
 
   describe 'database constraints and attributes' do
-    let(:character) { user.characters.create!(name: 'Test Character', alternate_names: ['Alt Name 1', 'Alt Name 2'], tags: ['tag1', 'tag2']) }
+    let(:character) { user.characters.create!(name: 'Test Character', alternate_names: [ 'Alt Name 1', 'Alt Name 2' ], tags: [ 'tag1', 'tag2' ]) }
 
     it 'has UUID as primary key' do
       expect(character.id).to be_present
@@ -82,12 +82,12 @@ RSpec.describe Character, type: :model do
     end
 
     it 'supports alternate names as an array' do
-      expect(character.alternate_names).to eq(['Alt Name 1', 'Alt Name 2'])
+      expect(character.alternate_names).to eq([ 'Alt Name 1', 'Alt Name 2' ])
       expect(character.alternate_names).to be_an(Array)
     end
 
     it 'supports tags as an array' do
-      expect(character.tags).to eq(['tag1', 'tag2'])
+      expect(character.tags).to eq([ 'tag1', 'tag2' ])
       expect(character.tags).to be_an(Array)
     end
 

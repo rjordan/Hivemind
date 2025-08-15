@@ -11,7 +11,7 @@ RSpec.describe HivemindSchema, type: :request do
 
   describe 'characters basic query' do
     let!(:char1) { user.characters.create!(name: 'Alpha', tags: %w[tag1], alternate_names: [], public: false) }
-    let!(:char2) { user.characters.create!(name: 'Beta', tags: %w[tag2], alternate_names: ['B'], public: true) }
+    let!(:char2) { user.characters.create!(name: 'Beta', tags: %w[tag2], alternate_names: [ 'B' ], public: true) }
 
     let(:query_string) do
       <<~GQL

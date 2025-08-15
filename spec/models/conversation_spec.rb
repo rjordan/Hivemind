@@ -70,7 +70,7 @@ RSpec.describe Conversation, type: :model do
       Conversation.create!(
         title: 'Test Conversation',
         persona: persona,
-        tags: ['tag1', 'tag2'],
+        tags: [ 'tag1', 'tag2' ],
         assistant: false,
         scenario: 'A test scenario',
         initial_message: 'Hello, this is the initial message',
@@ -89,7 +89,7 @@ RSpec.describe Conversation, type: :model do
     end
 
     it 'supports tags as an array' do
-      expect(conversation.tags).to eq(['tag1', 'tag2'])
+      expect(conversation.tags).to eq([ 'tag1', 'tag2' ])
       expect(conversation.tags).to be_an(Array)
     end
 
@@ -132,7 +132,7 @@ RSpec.describe Conversation, type: :model do
     let(:character2) { user.characters.create!(name: 'Character 2') }
 
     it 'can have multiple characters' do
-      conversation.characters = [character1, character2]
+      conversation.characters = [ character1, character2 ]
       expect(conversation.characters.count).to eq(2)
       expect(conversation.characters).to include(character1, character2)
     end

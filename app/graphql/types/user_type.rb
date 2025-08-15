@@ -10,9 +10,9 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the user was created"
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the user was last updated"
 
-    field :personas, [PersonaType], null: false, description: "Personas associated with the user"
-    field :conversations, [ConversationType], null: false, description: "Conversations associated with the user"
-    field :characters, [CharacterType], null: false, description: "Characters associated with the user"
+    field :personas, [ PersonaType ], null: false, description: "Personas associated with the user"
+    field :conversations, [ ConversationType ], null: false, description: "Conversations associated with the user"
+    field :characters, [ CharacterType ], null: false, description: "Characters associated with the user"
 
     def admin
       object.is_admin

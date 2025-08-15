@@ -4,15 +4,15 @@ module Types
 
     field :id, ID, null: false, description: "ID of the character"
     field :name, String, null: false, description: "Name of the character"
-    field :alternate_names, [String], null: false, description: "Alternate names of the character"
-    field :tags, [String], null: false, description: "Tags associated with the character"
+    field :alternate_names, [ String ], null: false, description: "Alternate names of the character"
+    field :tags, [ String ], null: false, description: "Tags associated with the character"
     field :public, Boolean, null: false, description: "Visibility status of the character"
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the character was created"
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the character was last updated"
 
-    field :traits, [Types::CharacterTraitType], null: false, description: "Traits associated with the character"
-    field :conversations, [Types::ConversationType], null: false, description: "Conversation associated with the character"
+    field :traits, [ Types::CharacterTraitType ], null: false, description: "Traits associated with the character"
+    field :conversations, [ Types::ConversationType ], null: false, description: "Conversation associated with the character"
     field :user, Types::UserType, null: false, description: "User associated with the character"
-    field :facts, [String], null: false, description: "Facts associated with the character"
+    field :facts, [ String ], null: false, description: "Facts associated with the character"
   end
 end

@@ -25,12 +25,12 @@ end
 
 character = Character.find_or_create_by!(name: "Seraphima") do |character|
   character.user = user
-  character.tags = ["Fantasy", "Magic", "Adventure"]
+  character.tags = [ "Fantasy", "Magic", "Adventure" ]
 end
 
 conversation = Conversation.find_or_create_by!(title: "Seraphima's Journey") do |conversation|
   conversation.persona = persona
-  conversation.tags = ["Fantasy", "Adventure"]
+  conversation.tags = [ "Fantasy", "Adventure" ]
   conversation.scenario = "Seraphima embarks on a quest to find the lost city of Eldoria, facing magical creatures and ancient puzzles along the way."
   conversation.characters << character
   conversation.conversation_model = "llama3.2"

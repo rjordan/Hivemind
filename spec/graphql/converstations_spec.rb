@@ -53,7 +53,7 @@ RSpec.describe HivemindSchema, type: :request do
       Conversation.create!(
         title: "Test Conversation",
         scenario: "Test Scenario",
-        tags: ["test"],
+        tags: [ "test" ],
         assistant: true,
         initial_message: "Test Initial Message",
         persona: persona,
@@ -70,7 +70,7 @@ RSpec.describe HivemindSchema, type: :request do
               "id" => conversation.id,
               "title" => "Test Conversation",
               "scenario" => "Test Scenario",
-              "tags" => ["test"],
+              "tags" => [ "test" ],
               "assistant" => true,
               "initialMessage" => "Test Initial Message",
               "conversationModel" => "llama3.2",
@@ -115,7 +115,7 @@ RSpec.describe HivemindSchema, type: :request do
       Conversation.create!(
         title: "First Conversation",
         scenario: "First Scenario",
-        tags: ["test", "first"],
+        tags: [ "test", "first" ],
         assistant: true,
         persona: persona,
         conversation_model: 'llama3.2'
@@ -126,7 +126,7 @@ RSpec.describe HivemindSchema, type: :request do
       Conversation.create!(
         title: "Second Conversation",
         scenario: "Second Scenario",
-        tags: ["test", "second"],
+        tags: [ "test", "second" ],
         assistant: false,
         persona: persona,
         conversation_model: 'llama3.2'
@@ -286,7 +286,7 @@ RSpec.describe HivemindSchema, type: :request do
       Conversation.create!(
         title: "Tagged Conversation",
         scenario: "Tagged Scenario",
-        tags: ["work", "important", "meeting"],
+        tags: [ "work", "important", "meeting" ],
         persona: persona,
         conversation_model: 'llama3.2'
       )
@@ -307,7 +307,7 @@ RSpec.describe HivemindSchema, type: :request do
       tagged_conv = conversations.find { |conv| conv['node']['title'] == "Tagged Conversation" }
       untagged_conv = conversations.find { |conv| conv['node']['title'] == "Untagged Conversation" }
 
-      expect(tagged_conv['node']['tags']).to eq(["work", "important", "meeting"])
+      expect(tagged_conv['node']['tags']).to eq([ "work", "important", "meeting" ])
       expect(untagged_conv['node']['tags']).to eq([])
     end
   end

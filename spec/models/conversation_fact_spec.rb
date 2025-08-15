@@ -92,7 +92,7 @@ RSpec.describe ConversationFact, type: :model do
       fact3 = conversation.conversation_facts.create!(fact: 'Third fact')
 
       facts_by_creation = conversation.conversation_facts.order(:created_at)
-      expect(facts_by_creation.map(&:fact)).to eq(['First fact', 'Second fact', 'Third fact'])
+      expect(facts_by_creation.map(&:fact)).to eq([ 'First fact', 'Second fact', 'Third fact' ])
     end
 
     it 'allows updating facts' do
