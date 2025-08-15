@@ -1,7 +1,12 @@
 import { render } from 'solid-js/web'
 import { AuthProvider, useAuth } from '../UserContext'
 import { createSignal } from 'solid-js'
-import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest'
+
+// Mock backend call so refreshUserInternal resolves with a user when token exists
+vi.mock('../hivemind_svc', () => ({
+  getCurrentUser: async (token: string | null) => (token ? { id: '1', name: 'Test User' } : null)
+}))
 
 describe('UserContext', () => {
   let container: HTMLElement
@@ -41,8 +46,8 @@ describe('UserContext', () => {
 
   it('should initialize with default state', () => {
     const TestComponent = () => {
-      const [store] = useAuth()
-      return <div>{store.isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</div>
+      const [, actions] = useAuth()
+      return <div>{actions.isAuthenticated() ? 'Authenticated' : 'Not Authenticated'}</div>
     }
 
     render(() => (
@@ -56,12 +61,14 @@ describe('UserContext', () => {
 
   it('should login and update state', async () => {
     const TestComponent = () => {
-      const [store, { login }] = useAuth()
+      const [, { login, isAuthenticated, refreshUser }] = useAuth()
       const [status, setStatus] = createSignal('')
 
       const handleLogin = async () => {
-        await login('test_token', { id: '1', name: 'Test User' })
-        setStatus(store.isAuthenticated ? 'Authenticated' : 'Not Authenticated')
+        await login('test_token')
+        // proactively refresh to ensure user is populated
+        await refreshUser()
+        setStatus(isAuthenticated() ? 'Authenticated' : 'Not Authenticated')
       }
 
       return (
@@ -82,20 +89,20 @@ describe('UserContext', () => {
     button?.click()
 
     await new Promise((resolve) => window.setTimeout(resolve, 0)) // Wait for state update
+    await new Promise((resolve) => window.setTimeout(resolve, 0)) // Wait for effect fetch
 
     expect(localStorage.getItem('auth_token')).toBe('test_token')
-    expect(localStorage.getItem('user_info')).toBe(JSON.stringify({ id: '1', name: 'Test User' }))
     expect(container.textContent).toContain('Authenticated')
   })
 
   it('should logout and clear state', () => {
     const TestComponent = () => {
-      const [store, { logout }] = useAuth()
+      const [, { logout, isAuthenticated }] = useAuth()
       const [status, setStatus] = createSignal('')
 
       const handleLogout = () => {
         logout()
-        setStatus(store.isAuthenticated ? 'Authenticated' : 'Not Authenticated')
+        setStatus(isAuthenticated() ? 'Authenticated' : 'Not Authenticated')
       }
 
       return (
@@ -107,7 +114,6 @@ describe('UserContext', () => {
     }
 
     localStorage.setItem('auth_token', 'test_token')
-    localStorage.setItem('user_info', JSON.stringify({ id: '1', name: 'Test User' }))
 
     render(() => (
       <AuthProvider>
@@ -119,7 +125,6 @@ describe('UserContext', () => {
     button?.click()
 
     expect(localStorage.getItem('auth_token')).toBeNull()
-    expect(localStorage.getItem('user_info')).toBeNull()
     expect(container.textContent).toContain('Not Authenticated')
   })
 })

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ConversationFact, type: :model do
   let(:user) { User.create!(name: 'fact_user', email: 'fact@example.com') }
   let(:persona) { user.personas.create!(name: 'Test Persona', description: 'A test persona description') }
-  let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
+  let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
 
   describe 'validations' do
     let(:fact) { conversation.conversation_facts.build(fact: 'The character likes pizza') }
@@ -68,7 +68,7 @@ RSpec.describe ConversationFact, type: :model do
   end
 
   describe 'conversation facts functionality' do
-    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
+    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
 
     it 'can store multiple facts for a conversation' do
       fact1 = conversation.conversation_facts.create!(fact: 'Character likes tea')
@@ -92,7 +92,7 @@ RSpec.describe ConversationFact, type: :model do
       fact3 = conversation.conversation_facts.create!(fact: 'Third fact')
 
       facts_by_creation = conversation.conversation_facts.order(:created_at)
-      expect(facts_by_creation.map(&:fact)).to eq(['First fact', 'Second fact', 'Third fact'])
+      expect(facts_by_creation.map(&:fact)).to eq([ 'First fact', 'Second fact', 'Third fact' ])
     end
 
     it 'allows updating facts' do

@@ -11,6 +11,6 @@ module Types
 
     field :user, UserType, null: false, description: "User associated with the persona"
     # Probably don't need a connection here?
-    field :conversations, [ConversationType], null: false, description: "Conversations associated with the persona"
+    field :conversations, [ ConversationType ], null: false, description: "Conversations associated with the persona"
   end
 end

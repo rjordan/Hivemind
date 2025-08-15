@@ -5,7 +5,7 @@ RSpec.describe Conversation, type: :model do
   let(:persona) { user.personas.create!(name: 'Test Persona', description: 'A test persona description') }
 
   describe 'validations' do
-    let(:conversation) { Conversation.new(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
+    let(:conversation) { Conversation.new(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
 
     it 'is valid with valid attributes' do
       expect(conversation).to be_valid
@@ -24,14 +24,14 @@ RSpec.describe Conversation, type: :model do
     end
 
     it 'is invalid without a persona' do
-      conversation = Conversation.new(title: 'Test Conversation', scenario: 'Test scenario')
+      conversation = Conversation.new(title: 'Test Conversation', scenario: 'Test scenario', conversation_model: 'llama3.2')
       expect(conversation).not_to be_valid
       expect(conversation.errors[:persona]).to include("must exist")
     end
   end
 
   describe 'associations' do
-    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
+    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
     let(:character) { user.characters.create!(name: 'Test Character') }
 
     it 'belongs to a persona' do
@@ -41,7 +41,7 @@ RSpec.describe Conversation, type: :model do
 
     it 'has and belongs to many characters' do
       expect(conversation).to respond_to(:characters)
-      expect(Conversation.reflect_on_association(:characters).macro).to eq(:has_and_belongs_to_many)
+      expect(Conversation.reflect_on_association(:characters).macro).to eq(:has_many)
     end
 
     it 'has many conversation facts' do
@@ -70,10 +70,11 @@ RSpec.describe Conversation, type: :model do
       Conversation.create!(
         title: 'Test Conversation',
         persona: persona,
-        tags: ['tag1', 'tag2'],
+        tags: [ 'tag1', 'tag2' ],
         assistant: false,
         scenario: 'A test scenario',
-        initial_message: 'Hello, this is the initial message'
+        initial_message: 'Hello, this is the initial message',
+        conversation_model: 'llama3.2'
       )
     end
 
@@ -88,17 +89,17 @@ RSpec.describe Conversation, type: :model do
     end
 
     it 'supports tags as an array' do
-      expect(conversation.tags).to eq(['tag1', 'tag2'])
+      expect(conversation.tags).to eq([ 'tag1', 'tag2' ])
       expect(conversation.tags).to be_an(Array)
     end
 
     it 'has default empty array for tags' do
-      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario')
+      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario', conversation_model: 'llama3.2')
       expect(simple_conversation.tags).to eq([])
     end
 
     it 'has default true for assistant flag' do
-      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario')
+      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario', conversation_model: 'llama3.2')
       expect(simple_conversation.assistant).to be_truthy
     end
 
@@ -111,7 +112,7 @@ RSpec.describe Conversation, type: :model do
     end
 
     it 'allows initial_message to be nil' do
-      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario')
+      simple_conversation = Conversation.create!(title: 'Simple Conversation', persona: persona, scenario: 'Simple scenario', conversation_model: 'llama3.2')
       expect(simple_conversation.initial_message).to be_nil
     end
 
@@ -126,12 +127,12 @@ RSpec.describe Conversation, type: :model do
   end
 
   describe 'many-to-many relationship with characters' do
-    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario') }
+    let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
     let(:character1) { user.characters.create!(name: 'Character 1') }
     let(:character2) { user.characters.create!(name: 'Character 2') }
 
     it 'can have multiple characters' do
-      conversation.characters = [character1, character2]
+      conversation.characters = [ character1, character2 ]
       expect(conversation.characters.count).to eq(2)
       expect(conversation.characters).to include(character1, character2)
     end

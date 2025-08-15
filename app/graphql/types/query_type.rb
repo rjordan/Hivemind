@@ -10,8 +10,8 @@ module Types
       context.schema.object_from_id(id, context)
     end
 
-    field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
-      argument :ids, [ID], required: true, description: "IDs of the objects."
+    field :nodes, [ Types::NodeType, null: true ], null: true, description: "Fetches a list of objects given a list of IDs." do
+      argument :ids, [ ID ], required: true, description: "IDs of the objects."
     end
 
     def nodes(ids:)
@@ -27,10 +27,11 @@ module Types
     end
 
     field :conversations, resolver: Resolvers::ConversationsResolver
+    field :characters, resolver: Resolvers::CharactersResolver
     # field :users, resolver: Resolvers::UsersResolver
-    # field :characters, resolver: Resolvers::CharactersResolver
     # field :personas, resolver: Resolvers::PersonasResolver
     # field :user, resolver: Resolvers::UserResolver
+    # field :extras, resolver: Resolvers::ExtrasResolver # TODO: Simplified characters that only exist inside a chat
     field :current_user, resolver: Resolvers::CurrentUserResolver
   end
 end

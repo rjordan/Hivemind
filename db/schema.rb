@@ -20,9 +20,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.uuid "character_id", null: false
     t.uuid "conversation_id", null: false
     t.boolean "present", default: true
-    t.index ["character_id"], name: "index_character_conversations_on_character_id"
-    t.index ["conversation_id", "character_id"], name: "index_characters_conversations_on_conversation_and_user", unique: true
-    t.index ["conversation_id"], name: "index_character_conversations_on_conversation_id"
+    t.index [ "character_id" ], name: "index_character_conversations_on_character_id"
+    t.index [ "conversation_id", "character_id" ], name: "index_characters_conversations_on_conversation_and_user", unique: true
+    t.index [ "conversation_id" ], name: "index_character_conversations_on_conversation_id"
   end
 
   create_table "character_traits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -31,7 +31,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.string "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_character_traits_on_character_id"
+    t.index [ "character_id" ], name: "index_character_traits_on_character_id"
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -43,10 +43,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.boolean "public", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["alternate_names"], name: "index_characters_on_alternate_names", using: :gin
-    t.index ["name"], name: "index_characters_on_name"
-    t.index ["tags"], name: "index_characters_on_tags", using: :gin
-    t.index ["user_id"], name: "index_characters_on_user_id"
+    t.index [ "alternate_names" ], name: "index_characters_on_alternate_names", using: :gin
+    t.index [ "name" ], name: "index_characters_on_name"
+    t.index [ "tags" ], name: "index_characters_on_tags", using: :gin
+    t.index [ "user_id" ], name: "index_characters_on_user_id"
   end
 
   create_table "conversation_facts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -54,7 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.string "fact", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["conversation_id"], name: "index_conversation_facts_on_conversation_id"
+    t.index [ "conversation_id" ], name: "index_conversation_facts_on_conversation_id"
   end
 
   create_table "conversations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -64,11 +64,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.boolean "assistant", default: true
     t.text "scenario", null: false
     t.text "initial_message"
-    t.string "converstation_model", null: false
+    t.string "conversation_model", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["persona_id"], name: "index_conversations_on_persona_id"
-    t.index ["tags"], name: "index_conversations_on_tags", using: :gin
+    t.index [ "persona_id" ], name: "index_conversations_on_persona_id"
+    t.index [ "tags" ], name: "index_conversations_on_tags", using: :gin
   end
 
   create_table "personas", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -78,7 +78,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.boolean "default"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_personas_on_user_id"
+    t.index [ "user_id" ], name: "index_personas_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -88,8 +88,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_233858) do
     t.datetime "updated_at", null: false
     t.string "github_id"
     t.string "avatar_url"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["github_id"], name: "index_users_on_github_id", unique: true
+    t.index [ "email" ], name: "index_users_on_email", unique: true
+    t.index [ "github_id" ], name: "index_users_on_github_id", unique: true
   end
 
   add_foreign_key "character_conversations", "characters"

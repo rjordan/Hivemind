@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApiController
-  skip_before_action :authenticate_api_user!, only: [:execute]
+  skip_before_action :authenticate_api_user!, only: [ :execute ]
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
@@ -12,8 +12,7 @@ class GraphqlController < ApiController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      # Query context goes here, for example:
-      current_user: current_user,
+      current_user: current_user
     }
     result = HivemindSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
@@ -48,6 +47,6 @@ class GraphqlController < ApiController
     logger.error e.message
     logger.error e.backtrace.join("\n")
 
-    render json: { errors: [{ message: e.message, backtrace: e.backtrace }], data: {} }, status: 500
+    render json: { errors: [ { message: e.message, backtrace: e.backtrace } ], data: {} }, status: 500
   end
 end

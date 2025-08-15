@@ -1,54 +1,7 @@
-import { createEffect, createSignal, For, createMemo } from 'solid-js'
-import { createGraphQLClient, gql } from '@solid-primitives/graphql'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 import { useAuth } from './UserContext'
-import config from './config.json'
-
-const GET_CONVERSATIONS = gql`
-  query {
-    conversations {
-      edges {
-        node {
-          id
-          title
-          assistant
-          scenario
-          initialMessage
-          createdAt
-          updatedAt
-        }
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-`
-
-type Conversation = {
-  id: string;
-  title: string;
-  assistant: string;
-  scenario: string;
-  initialMessage: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type ConversationConnection = {
-  conversations: {
-    edges: { node: Conversation }[];
-    pageInfo: {
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor: string;
-      endCursor: string;
-    };
-  };
-};
-
+import type { Conversation } from './types'
+import { getConversations } from './hivemind_svc'
 
 function ConversationCard(story: Conversation) {
   console.log(`Card: ${JSON.stringify(story)}`)
@@ -68,27 +21,23 @@ function ConversationCard(story: Conversation) {
 }
 
 const Conversations = () => {
-  const [authStore] = useAuth()
+  const [, { getToken }] = useAuth()
   const [conversations, setConversations] = createSignal<Conversation[]>([])
-
-  // Re-create the GraphQL client whenever the auth token changes so the header stays in sync.
-  const graphqlClient = createMemo(() =>
-    createGraphQLClient(`${config.apiBaseUrl}/graphql`, {
-      headers: {
-        Authorization: `Bearer ${authStore.token || ''}`
-      }
-    })
-  )
+  const [isLoading, setIsLoading] = createSignal<boolean>(true)
 
   // Execute the query using the current client (reacts to token changes)
-  const [conversationResult] = graphqlClient()<ConversationConnection>(GET_CONVERSATIONS)
-
   createEffect(() => {
-    // Track the cursor to allow pagination
-    setConversations((prev) => [
-      ...prev,
-      ...(conversationResult()?.conversations.edges.map((e) => e.node) || []),
-    ])
+    setIsLoading(true)
+    getConversations(getToken())
+      .then((result) => {
+        const next = result?.conversations?.edges?.map((e) => e.node) || []
+        setConversations((prev) => [...prev, ...next])
+      })
+      .catch((error) => {
+        console.error('Failed to fetch conversations:', error)
+        // Optionally: surface error UI later
+      })
+      .finally(() => setIsLoading(false))
   })
 
   return (
@@ -102,12 +51,20 @@ const Conversations = () => {
         Start New Conversation
       </button>
 
-      {/* Card Grid View */}
-      <div class="conversations__grid">
-        <For each={conversations()}>
-          {(story) => <ConversationCard {...story} />}
-        </For>
-      </div>
+      {/* Loading skeleton or Card Grid View */}
+      <Show when={!isLoading()} fallback={
+        <div class="conversations__grid">
+          <div class="conversations__card skeleton" />
+          <div class="conversations__card skeleton" />
+          <div class="conversations__card skeleton" />
+        </div>
+      }>
+        <div class="conversations__grid">
+          <For each={conversations()}>
+            {(story) => <ConversationCard {...story} />}
+          </For>
+        </div>
+      </Show>
 
     </div>
   )

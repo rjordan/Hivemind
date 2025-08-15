@@ -37,7 +37,7 @@ const AuthCallback: Component = () => {
 
       if (data.token) {
         // Pass user data if available from the backend
-        await login(data.token, data.user)
+        await login(data.token)
         navigate('/')
       } else {
         throw new Error('No token received')

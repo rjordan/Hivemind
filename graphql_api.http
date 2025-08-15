@@ -21,6 +21,7 @@ query {
     id
     email
     name
+    admin
     personas {
       id
       name
@@ -55,6 +56,38 @@ query {
         assistant
         scenario
         initialMessage
+        createdAt
+        updatedAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+### Character List
+POST {{BASE_URL}}/graphql
+Content-Type: application/json
+X-Request-Type: GraphQL
+Authorization: Bearer {{TOKEN}}
+
+query {
+  characters(includePublic: true, last: 5) {
+    edges {
+      node {
+        id
+        name
+        alternateNames
+        public
+        tags
+        traits {
+          traitType
+          value
+        }
         createdAt
         updatedAt
       }

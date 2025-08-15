@@ -6,6 +6,7 @@ import Home from './Home'
 import Conversations from './Conversations'
 import Login from './Login'
 import AuthCallback from './AuthCallback'
+import Characters from './Characters'
 
 // Higher-order helper to wrap a component in auth guard
 function protect<T>(Comp: Component<T>): Component<T> {
@@ -23,6 +24,7 @@ export const Routes: Component = () => (
     <Route path="/" component={() => <Home />} />
     {/* Protected routes */}
     <Route path="/conversations" component={protect(Conversations)} />
+    <Route path="/characters" component={protect(Characters)} />
   </Router>
 )
 

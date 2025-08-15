@@ -55,8 +55,8 @@ RSpec.describe ApplicationRecord, type: :model do
       user3 = User.create!(name: 'user3', email: 'user3@example.com')
 
       # Default order should be by created_at
-      users = User.where(id: [user1.id, user2.id, user3.id])
-      expect(users.map(&:name)).to eq(['user1', 'user2', 'user3'])
+      users = User.where(id: [ user1.id, user2.id, user3.id ])
+      expect(users.map(&:name)).to eq([ 'user1', 'user2', 'user3' ])
     end
   end
 end
