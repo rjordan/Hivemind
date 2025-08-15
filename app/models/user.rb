@@ -5,4 +5,8 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true
   validates :github_id, uniqueness: true, allow_nil: true
+
+  def is_admin
+    email == 'rjordan01@gmail.com'
+  end
 end

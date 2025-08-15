@@ -31,6 +31,7 @@ module Types
     # field :users, resolver: Resolvers::UsersResolver
     # field :personas, resolver: Resolvers::PersonasResolver
     # field :user, resolver: Resolvers::UserResolver
+    # field :extras, resolver: Resolvers::ExtrasResolver # TODO: Simplified characters that only exist inside a chat
     field :current_user, resolver: Resolvers::CurrentUserResolver
   end
 end

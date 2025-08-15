@@ -12,9 +12,19 @@ const mockAuthStore = {
 
 // Mock implementation of the auth actions
 const mockAuthActions = {
-  login: vi.fn(),
-  logout: vi.fn(),
-  clearError: vi.fn(),
+  login: vi.fn(async (token: string) => {
+    mockAuthStore.token = token
+    mockAuthStore.isAuthenticated = true
+  }),
+  logout: vi.fn(() => {
+    mockAuthStore.isAuthenticated = false
+    mockAuthStore.user = null
+    mockAuthStore.token = null
+  }),
+  getToken: vi.fn(() => mockAuthStore.token),
+  getUser: vi.fn(() => mockAuthStore.user),
+  isAuthenticated: vi.fn(() => mockAuthStore.isAuthenticated),
+  refreshUser: vi.fn(async () => {}),
 }
 
 // Create a UserContext with the mock store and actions

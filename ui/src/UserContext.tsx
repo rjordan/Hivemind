@@ -1,27 +1,22 @@
-import { createContext, useContext, createEffect, JSX } from 'solid-js'
+import { createContext, createSignal, useContext, createEffect, JSX, on } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { getCurrentUser } from './hivemind_svc'
+import type { User } from './types'
 
-// User and Auth types
-interface User {
-  id: string;
-  name: string;
-  email?: string;
-  avatar_url?: string;
-  github_username?: string;
-}
+// User type moved to shared types
 
 interface AuthStore {
-  isAuthenticated: boolean;
   isLoading: boolean;
-  token: string | null;
-  user: User | null;
   error: string | null;
 }
 
 interface AuthActions {
   login: (token: string, user?: User) => Promise<void>;
   logout: () => void;
-  clearError: () => void;
+  getToken: () => string | null;
+  getUser: () => User | null;
+  isAuthenticated: () => boolean;
+  refreshUser: () => Promise<void>;
 }
 
 type AuthContextType = [AuthStore, AuthActions];
@@ -30,59 +25,72 @@ const UserContext = createContext<AuthContextType>()
 
 export function AuthProvider(props: { children: JSX.Element }) {
   const [store, setStore] = createStore<AuthStore>({
-    isAuthenticated: false,
     isLoading: true,
-    token: null,
-    user: null,
     error: null,
   })
 
-  // Initialize auth state from localStorage
-  createEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    const userInfo = localStorage.getItem('user_info')
+  const [authToken, setAuthToken] = createSignal<string | null>(localStorage.getItem('auth_token'))
+  const [user, setUser] = createSignal<User | null>(null)
 
-    if (token) {
-      let user = null
-      if (userInfo) {
-        user = JSON.parse(userInfo)
+  const isAuthenticated = () => user() !== null
+
+  const toErrorMessage = (err: unknown): string =>
+    err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error'
+
+  const refreshUserInternal = async (token: string | null) => {
+    // No token: clear user and error, don't fetch
+    if (!token) {
+      setUser(null)
+      setStore({ isLoading: false, error: null })
+      return
+    }
+
+    setStore({ isLoading: true, error: null })
+    try {
+      const currentUser = await getCurrentUser(token)
+      // Treat null/undefined as invalid token
+      if (!currentUser) {
+        localStorage.removeItem('auth_token')
+        setAuthToken(null)
+        setUser(null)
+        setStore({ error: null })
+        return
       }
-
-      setStore({
-        isAuthenticated: true,
-        token,
-        user,
-        isLoading: false,
-        error: null,
-      })
-    } else {
+      setUser(currentUser)
+      setStore({ error: null })
+    } catch (error) {
+      console.error('Error fetching current user: ', error)
+      const msg = toErrorMessage(error)
+      // Optionally clear token on auth failure; keep it conservative for now
+      setUser(null)
+      setStore({ error: msg })
+    } finally {
       setStore({ isLoading: false })
     }
-  })
+  }
 
-  const login = async (_token: string, _user?: User) => {
+  // React when the token changes
+  createEffect(
+    on(
+      authToken,
+      (token) => {
+        void refreshUserInternal(token)
+      },
+      { defer: false }
+    )
+  )
+
+  const login = async (token: string) => {
     try {
-      setStore({ isLoading: true, error: null })
-
+      setStore({ error: null })
       // Store token and user info in localStorage
-      localStorage.setItem('auth_token', _token)
-      if (_user) {
-        localStorage.setItem('user_info', JSON.stringify(_user))
-      }
-
-      setStore({
-        isAuthenticated: true,
-        token: _token,
-        user: _user || null,
-        isLoading: false,
-        error: null,
-      })
+      localStorage.setItem('auth_token', token)
+      setAuthToken(token)
+      // Effect will pick this up; optionally force refresh immediately
+      // void refreshUserInternal(token)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed'
       setStore({
-        isAuthenticated: false,
-        token: null,
-        user: null,
         isLoading: false,
         error: errorMessage,
       })
@@ -93,25 +101,30 @@ export function AuthProvider(props: { children: JSX.Element }) {
   const logout = () => {
     // Clear localStorage
     localStorage.removeItem('auth_token')
-    localStorage.removeItem('user_info')
+    setAuthToken(null)
+    setUser(null)
 
     setStore({
-      isAuthenticated: false,
       isLoading: false,
-      token: null,
-      user: null,
       error: null,
     })
   }
 
-  const clearError = () => {
-    setStore({ error: null })
+  const getToken = () => authToken()
+
+  const getUser = () => user()
+
+  const refreshUser = async () => {
+    await refreshUserInternal(authToken())
   }
 
   const authActions: AuthActions = {
     login,
     logout,
-    clearError,
+    getToken,
+    getUser,
+    isAuthenticated,
+    refreshUser,
   }
 
   return (
@@ -134,8 +147,8 @@ export const isAuthenticated = (): boolean => {
   try {
     const context = useContext(UserContext)
     if (!context) return false
-    const [store] = context
-    return store.isAuthenticated
+    const [, actions] = context
+    return actions.isAuthenticated()
   } catch {
     return false
   }

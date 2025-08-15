@@ -1,10 +1,9 @@
 import { createSignal, Show } from 'solid-js'
 import { useAuth } from './UserContext'
-import { isAuthenticated } from './UserContext'
 
 const TopBar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false)
-  const [authStore, { logout }] = useAuth()
+  const [, { logout, getUser, isAuthenticated }] = useAuth()
 
 
   const toggleMobileMenu = () => {
@@ -42,7 +41,7 @@ const TopBar = () => {
             <a href="/conversations" class="topbar__nav-link">Conversations</a>
             <div class="topbar__dropdown">
               <button class="topbar__nav-link topbar__dropdown-button">
-                {authStore!.user.name}
+                {getUser()?.name}
                 <svg class="topbar__dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>

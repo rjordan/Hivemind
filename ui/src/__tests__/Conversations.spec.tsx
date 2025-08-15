@@ -1,30 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
- * Unified Conversations component tests
- * Combines structural, auth, GraphQL client, and UI state tests.
- */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@solidjs/testing-library'
 import Conversations from '../Conversations'
 vi.mock('../UserContext')
 import { AuthProvider } from '../UserContext'
 
-// Mock config
+// Mock config (used by service)
 vi.mock('../config.json', () => ({ default: { apiBaseUrl: 'http://localhost:3000' } }))
 
-// Mock GraphQL primitives
-type GraphQLResultSignal<T> = [() => T]
-// Simplified mock client function signature (no generic declaration syntax to avoid TSX parsing issues)
-const createGraphQLClientMock = vi.fn((_endpoint?: string, _opts?: { headers?: Record<string, string> }) => {
-  const fn = (_query: unknown): GraphQLResultSignal<unknown> => [() => undefined]
-  return Object.assign(fn, {})
-})
-vi.mock('@solid-primitives/graphql', () => ({
-  createGraphQLClient: (arg1?: string, arg2?: { headers?: Record<string, string> }) => {
-    createGraphQLClientMock(arg1, arg2)
-    return (_q: unknown): GraphQLResultSignal<unknown> => [() => undefined]
-  },
-  gql: (s: TemplateStringsArray | string) => s
+// Mock service calls
+const getConversationsMock = vi.fn(async (_token: string | null) => ({
+  conversations: { edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false, startCursor: '', endCursor: '' } }
+}))
+vi.mock('../hivemind_svc', () => ({
+  getConversations: (token: string | null) => getConversationsMock(token)
 }))
 
 // Helper to mutate mocked auth store
@@ -62,21 +51,18 @@ describe('Conversations (Unified)', () => {
     })
   })
 
-  describe('GraphQL Client', () => {
-    it('initializes client with auth header when authenticated', () => {
+  describe('Service', () => {
+    it('calls getConversations with token when authenticated', async () => {
       render(() => <Conversations />, { wrapper: Wrapper })
-      expect(createGraphQLClientMock).toHaveBeenCalledWith(
-        'http://localhost:3000/graphql',
-        expect.objectContaining({ headers: expect.objectContaining({ Authorization: 'Bearer mock_token' }) })
-      )
+      // allow effect to run
+      await new Promise((r) => setTimeout(r, 0))
+      expect(getConversationsMock).toHaveBeenCalledWith('mock_token')
     })
-    it('omits auth header when no token', () => {
+    it('calls getConversations with null when no token', async () => {
       setAuth({ token: null, isAuthenticated: false })
       render(() => <Conversations />, { wrapper: Wrapper })
-      expect(createGraphQLClientMock).toHaveBeenCalledWith(
-        'http://localhost:3000/graphql',
-        expect.objectContaining({ headers: expect.objectContaining({ Authorization: 'Bearer ' }) })
-      )
+      await new Promise((r) => setTimeout(r, 0))
+      expect(getConversationsMock).toHaveBeenCalledWith(null)
     })
   })
 

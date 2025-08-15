@@ -14,7 +14,7 @@ type PrivateRouteProps = {
  * 3. Unauthenticated -> redirect to /login
  */
 export const PrivateRoute: Component<PrivateRouteProps> = (props) => {
-  const [store] = useAuth()
+  const [store, { isAuthenticated}] = useAuth()
 
   return (
     <Show
@@ -26,7 +26,7 @@ export const PrivateRoute: Component<PrivateRouteProps> = (props) => {
         </div>
       }
     >
-      <Show when={store.isAuthenticated} fallback={<Navigate href="/login" />}>
+      <Show when={isAuthenticated()} fallback={<Navigate href="/login" />}>
         {props.children}
       </Show>
     </Show>
