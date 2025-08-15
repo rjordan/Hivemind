@@ -33,7 +33,8 @@ const Conversations = () => {
         const next = result?.conversations?.edges?.map((e) => e.node) || []
         setConversations((prev) => [...prev, ...next])
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Failed to fetch conversations:", error);
         // Optionally: surface error UI later
       })
       .finally(() => setIsLoading(false))

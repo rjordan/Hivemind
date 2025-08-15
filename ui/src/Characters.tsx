@@ -34,7 +34,9 @@ const Characters = () => {
         const next = result?.characters?.edges?.map((e) => e.node) || []
         setCharacters(next)
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("Failed to fetch characters:", err);
+      })
       .finally(() => setIsLoading(false))
   })
 

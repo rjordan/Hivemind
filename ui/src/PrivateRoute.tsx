@@ -14,7 +14,7 @@ type PrivateRouteProps = {
  * 3. Unauthenticated -> redirect to /login
  */
 export const PrivateRoute: Component<PrivateRouteProps> = (props) => {
-  const [store, { isAuthenticated}] = useAuth()
+  const [store, { isAuthenticated }] = useAuth()
 
   return (
     <Show
