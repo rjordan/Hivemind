@@ -34,7 +34,7 @@ const Conversations = () => {
         setConversations((prev) => [...prev, ...next])
       })
       .catch((error) => {
-        console.error("Failed to fetch conversations:", error);
+        console.error('Failed to fetch conversations:', error)
         // Optionally: surface error UI later
       })
       .finally(() => setIsLoading(false))

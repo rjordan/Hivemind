@@ -35,7 +35,7 @@ const Characters = () => {
         setCharacters(next)
       })
       .catch((err) => {
-        console.error("Failed to fetch characters:", err);
+        console.error('Failed to fetch characters:', err)
       })
       .finally(() => setIsLoading(false))
   })

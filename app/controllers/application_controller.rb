@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
     # Allow passing a fake token in dev
     if Rails.env.development? || Rails.env.test?
       if token == "FAKE_TOKEN"
-        return @current_user ||= User.find_by(email: ENV['FAKE_USER_EMAIL'])
+        return @current_user ||= User.find_by(email: ENV["FAKE_USER_EMAIL"])
       end
     end
 
