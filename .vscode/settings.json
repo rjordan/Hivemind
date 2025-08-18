@@ -11,4 +11,9 @@
       "database": "hivemind_dev"
     }
   ]
+  ,
+  "rubyTestExplorer.testFolders": [
+    "spec",
+    "mcpserver/spec"
+  ]
 }

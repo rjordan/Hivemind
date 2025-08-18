@@ -11,6 +11,7 @@ if Dir.exist?(rails_models_dir)
   begin
     require 'application_record'
     require 'character'
+    require 'character_trait'
   rescue LoadError => e
     warn "Failed to load Rails models: #{e.class}: #{e.message}. Falling back to local models."
   end
@@ -22,5 +23,10 @@ module HivemindMCP
   else
     # Fallback minimal model if Rails models aren't available
     class Character < ActiveRecord::Base; end
+  end
+  if defined?(::CharacterTrait)
+    CharacterTrait = ::CharacterTrait
+  else
+    class CharacterTrait < ActiveRecord::Base; end
   end
 end

@@ -47,7 +47,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'destroys dependent characters when user is deleted' do
-      character = user.characters.create!(name: 'Test Character')
+      character = user.characters.create!(name: 'Test Character', description: 'A test character description')
       expect { user.destroy }.to change { Character.count }.by(-1)
     end
 

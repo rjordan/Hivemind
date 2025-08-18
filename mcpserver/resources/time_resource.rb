@@ -10,7 +10,7 @@ module HivemindMCP
     mime_type "text/plain"
     description "Get current date and time"
 
-  # The actual content generation, used by the server when reading this resource
+    # The actual content generation, used by the server when reading this resource
     def content
       Time.now.utc.iso8601
     end

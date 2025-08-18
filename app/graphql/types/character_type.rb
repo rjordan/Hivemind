@@ -10,9 +10,8 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the character was created"
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false, description: "Timestamp when the character was last updated"
 
-    field :traits, [ Types::CharacterTraitType ], null: false, description: "Traits associated with the character"
+    field :facts, [ Types::CharacterFactType ], null: false, description: "Facts associated with the character"
     field :conversations, [ Types::ConversationType ], null: false, description: "Conversation associated with the character"
     field :user, Types::UserType, null: false, description: "User associated with the character"
-    field :facts, [ String ], null: false, description: "Facts associated with the character"
   end
 end

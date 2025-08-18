@@ -16,7 +16,7 @@ module Resolvers
         result = result.or(Character.where(public: include_public))
       end
       result = result.order(:name)
-      result.includes(:traits, :user, :conversations)
+      result.includes(:facts, :user, :conversations)
     end
   end
 end
