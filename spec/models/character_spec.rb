@@ -4,7 +4,7 @@ RSpec.describe Character, type: :model do
   let(:user) { User.create!(name: 'char_user', email: 'char@example.com') }
 
   describe 'validations' do
-    let(:character) { user.characters.build(name: 'Test Character') }
+    let(:character) { user.characters.build(name: 'Test Character', description: 'A test character description') }
 
     it 'is valid with valid attributes' do
       expect(character).to be_valid
@@ -33,7 +33,7 @@ RSpec.describe Character, type: :model do
   end
 
   describe 'associations' do
-    let(:character) { user.characters.create!(name: 'Test Character') }
+  let(:character) { user.characters.create!(name: 'Test Character', description: 'A test character description') }
     let(:persona) { user.personas.create!(name: 'Test Persona', description: 'Test Description') }
 
     it 'belongs to a user' do
@@ -47,13 +47,13 @@ RSpec.describe Character, type: :model do
     end
 
     it 'has many traits' do
-      expect(character).to respond_to(:traits)
-      expect(Character.reflect_on_association(:traits).macro).to eq(:has_many)
+  expect(character).to respond_to(:facts)
+  expect(Character.reflect_on_association(:facts).macro).to eq(:has_many)
     end
 
     it 'destroys dependent traits when character is deleted' do
-      trait = character.traits.create!(trait_type: 'personality', value: 'friendly')
-      expect { character.destroy }.to change { CharacterTrait.count }.by(-1)
+  fact = character.facts.create!(fact: 'friendly')
+  expect { character.destroy }.to change { CharacterFact.count }.by(-1)
     end
 
     it 'can be associated with conversations' do
@@ -69,7 +69,7 @@ RSpec.describe Character, type: :model do
   end
 
   describe 'database constraints and attributes' do
-    let(:character) { user.characters.create!(name: 'Test Character', alternate_names: [ 'Alt Name 1', 'Alt Name 2' ], tags: [ 'tag1', 'tag2' ]) }
+  let(:character) { user.characters.create!(name: 'Test Character', description: 'A test character description', alternate_names: [ 'Alt Name 1', 'Alt Name 2' ], tags: [ 'tag1', 'tag2' ]) }
 
     it 'has UUID as primary key' do
       expect(character.id).to be_present
@@ -92,7 +92,7 @@ RSpec.describe Character, type: :model do
     end
 
     it 'has default empty arrays for alternate_names and tags' do
-      simple_character = user.characters.create!(name: 'Simple Character')
+  simple_character = user.characters.create!(name: 'Simple Character', description: 'A test character description')
       expect(simple_character.alternate_names).to eq([])
       expect(simple_character.tags).to eq([])
     end
@@ -105,9 +105,7 @@ RSpec.describe Character, type: :model do
 
   describe 'database indexes' do
     it 'should have index on name for performance' do
-      # This tests that the migration was applied correctly
-      # In a real test, you might check database schema or use database_cleaner
-      character = user.characters.create!(name: 'Indexed Character')
+      character = user.characters.create!(name: 'Indexed Character', description: 'A test character description')
       expect(character.persisted?).to be_truthy
     end
   end

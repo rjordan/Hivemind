@@ -32,7 +32,7 @@ RSpec.describe Conversation, type: :model do
 
   describe 'associations' do
     let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
-    let(:character) { user.characters.create!(name: 'Test Character') }
+    let(:character) { user.characters.create!(name: 'Test Character', description: 'A test character description') }
 
     it 'belongs to a persona' do
       expect(conversation).to respond_to(:persona)
@@ -128,8 +128,8 @@ RSpec.describe Conversation, type: :model do
 
   describe 'many-to-many relationship with characters' do
     let(:conversation) { Conversation.create!(title: 'Test Conversation', persona: persona, scenario: 'Test scenario', conversation_model: 'llama3.2') }
-    let(:character1) { user.characters.create!(name: 'Character 1') }
-    let(:character2) { user.characters.create!(name: 'Character 2') }
+    let(:character1) { user.characters.create!(name: 'Character 1', description: "test") }
+    let(:character2) { user.characters.create!(name: 'Character 2', description: "test") }
 
     it 'can have multiple characters' do
       conversation.characters = [ character1, character2 ]

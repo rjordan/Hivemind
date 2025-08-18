@@ -26,6 +26,7 @@ end
 character = Character.find_or_create_by!(name: "Seraphima") do |character|
   character.user = user
   character.tags = [ "Fantasy", "Magic", "Adventure" ]
+  character.description = "Seraphima is an ancient forest spirit."
 end
 
 conversation = Conversation.find_or_create_by!(title: "Seraphima's Journey") do |conversation|

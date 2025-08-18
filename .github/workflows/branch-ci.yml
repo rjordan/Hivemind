@@ -39,6 +39,44 @@ jobs:
         run: |
           bin/rails spec
 
+  mcpserver-tests:
+    name: MCP RSpec
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      RACK_ENV: test
+      HIVEMIND_DB_HOST: localhost
+      HIVEMIND_DB_USER: postgres
+      HIVEMIND_DB_PASSWORD: password
+    defaults:
+      run:
+        working-directory: mcpserver
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4.5
+          bundler-cache: true
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev
+      - name: Prepare database
+        run: |
+          # If MCP needs DB setup, add here. Otherwise, skip.
+          echo "No DB setup needed for MCP"
+      - name: Install dependencies
+        run: bundle install
+      - name: Run MCP RSpec
+        run: |
+          bundle exec rspec
+
   ui-lint:
     name: ESLint (UI)
     runs-on: ubuntu-latest
@@ -80,7 +118,7 @@ jobs:
 
   aggregate:
     runs-on: ubuntu-latest
-    needs: [backend-tests, ui-lint, ui-tests]
+    needs: [backend-tests, ui-lint, ui-tests, mcpserver-tests]
     steps:
       - name: Success
         run: echo "All checks passed."

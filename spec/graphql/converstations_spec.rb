@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe HivemindSchema, type: :request do
   let(:user) { User.create!(name: "testuser", email: "test@example.com") }
   let(:persona) { user.personas.create!(name: "Test Persona", description: "Test Description") }
-  let(:character) { user.characters.create!(name: "Test Character") }
+  let(:character) { user.characters.create!(name: "Test Character", description: "Test Description") }
 
   let(:context) do
     { current_user: user }

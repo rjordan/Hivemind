@@ -10,8 +10,8 @@ RSpec.describe HivemindSchema, type: :request do
   end
 
   describe 'characters basic query' do
-    let!(:char1) { user.characters.create!(name: 'Alpha', tags: %w[tag1], alternate_names: [], public: false) }
-    let!(:char2) { user.characters.create!(name: 'Beta', tags: %w[tag2], alternate_names: [ 'B' ], public: true) }
+    let!(:char1) { user.characters.create!(name: 'Alpha', tags: %w[tag1], alternate_names: [], public: false, description: 'test') }
+    let!(:char2) { user.characters.create!(name: 'Beta', tags: %w[tag2], alternate_names: [ 'B' ], public: true, description: 'test') }
 
     let(:query_string) do
       <<~GQL
@@ -40,8 +40,8 @@ RSpec.describe HivemindSchema, type: :request do
 
   describe 'include_public argument' do
     let!(:other_user) { User.create!(name: 'other', email: 'other@example.com') }
-    let!(:public_other_char) { other_user.characters.create!(name: 'PublicChar', public: true) }
-    let!(:private_other_char) { other_user.characters.create!(name: 'PrivateChar', public: false) }
+    let!(:public_other_char) { other_user.characters.create!(name: 'PublicChar', public: true, description: 'Public description') }
+    let!(:private_other_char) { other_user.characters.create!(name: 'PrivateChar', public: false, description: 'Private description') }
 
     let(:query_string) do
       <<~GQL
@@ -67,9 +67,9 @@ RSpec.describe HivemindSchema, type: :request do
     end
   end
 
-  describe 'traits and conversations eager loading' do
-    let!(:character) { user.characters.create!(name: 'WithStuff') }
-    let!(:trait) { character.traits.create!(trait_type: 'Personality', value: 'Very Brave') }
+  describe 'facts and conversations eager loading' do
+    let!(:character) { user.characters.create!(name: 'WithStuff', description: 'Desc') }
+    let!(:fact) { character.facts.create!(fact: 'Very Brave') }
     let!(:persona) { user.personas.create!(name: 'Persona', description: 'Desc') }
     let!(:conversation) { persona.conversations.create!(title: 'Conv', scenario: 'Scen', conversation_model: 'llama3.2') }
 
@@ -84,7 +84,7 @@ RSpec.describe HivemindSchema, type: :request do
             edges {
               node {
                 name
-                traits { traitType value }
+                facts { fact createdAt updatedAt }
                 conversations { title }
               }
             }
@@ -93,15 +93,26 @@ RSpec.describe HivemindSchema, type: :request do
       GQL
     end
 
-    it 'returns nested traits and conversations' do
+    it 'returns nested facts and conversations' do
       res = exec_query(query_string)
       expect(res['errors']).to be_nil
       node = res['data']['characters']['edges'].first['node']
-      expect(node['traits'].first).to match(
-        "traitType" => 'Personality',
-        "value" => 'Very Brave'
+      expect(node['facts'].first).to match(
+        "fact" => 'Very Brave',
+        "createdAt" => an_instance_of(String),
+        "updatedAt" => an_instance_of(String)
       )
       expect(node['conversations'].first['title']).to eq('Conv')
+    end
+  end
+
+  describe 'authentication' do
+    let(:query_string) { 'query { characters { edges { node { id } } } }' }
+
+    it 'errors without current_user' do
+      res = described_class.execute(query_string, variables: {}, context: {})
+      expect(res['errors']).not_to be_nil
+      expect(res['errors'].first['message']).to include('Authentication required')
     end
   end
 
