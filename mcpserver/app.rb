@@ -6,19 +6,20 @@ require 'dotenv/load'
 require 'fast_mcp'
 require 'faraday'
  $LOAD_PATH.unshift(File.join(__dir__, 'lib')) unless $LOAD_PATH.include?(File.join(__dir__, 'lib'))
-require_relative 'lib/db'
-require_relative 'lib/models'
+require_relative 'lib/request_context'
 
 set :bind, ENV.fetch('BIND', '0.0.0.0')
 set :port, ENV.fetch('PORT', 5678)
+
+# Add middleware to extract auth headers from requests
+use HivemindMCP::AuthHeaderMiddleware
 
 get '/health' do
   content_type :json
   {
     status: 'ok',
-    service: 'hivemind-mcp',
-    db_status: HivemindMCP::DB.connected? ? 'connected' : 'disconnected'
-   }.to_json
+    service: 'hivemind-mcp'
+  }.to_json
 end
 
 # Configure and mount FastMcp Rack transport to expose MCP over HTTP/SSE
@@ -29,7 +30,6 @@ Dir[File.join(__dir__, 'resources', '**/*.rb')].sort.each { |f| require f }
 
 # Build MCP server and register discovered tools/resources
 MCP_SERVER = FastMcp::Server.new(name: 'hivemind-mcp', version: '0.1.0')
-HivemindMCP::DB.establish_connection!
 if defined?(HivemindMCP)
   mod = HivemindMCP
   constants = mod.constants(false)

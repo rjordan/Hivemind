@@ -8,6 +8,7 @@ module Resolvers
 
     argument :include_public, Boolean, required: false
 
+    # Split public into their own resolver
     def resolve(include_public: false)
       raise GraphQL::ExecutionError, "Authentication required" unless context[:current_user]
 

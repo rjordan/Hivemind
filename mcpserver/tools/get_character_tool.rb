@@ -1,26 +1,78 @@
 # frozen_string_literal: true
 
-require 'erb'
 require 'fast_mcp'
+require 'json'
 
-require_relative '../lib/db'
-require_relative '../lib/models'
+require_relative '../lib/request_context'
+
+GRAPHQL_URL = ENV['HIVEMIND_API_URL']
 
 module HivemindMCP
   class GetCharacterTool < ::FastMcp::Tool
-    description "Fetch a character by ID (uses DB when configured, otherwise GraphQL)"
+    description "Fetch a character by ID via GraphQL API"
 
     arguments do
       required(:id).filled(:string).description("Character ID")
     end
 
     def call(id:)
-      record = Character.find_by(id: id_extracted(id))
-      return "" unless record
-      serialize_character(record)
+      result = fetch_character_via_graphql(id)
+      return result.to_json
     end
 
     private
+
+    def build_character_query(id)
+      <<~GRAPHQL
+        query GetCharacter($id: ID!) {
+          character(id: $id) {
+            id
+            name
+            alternateNames
+            tags
+            public
+            facts {
+              fact
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    def fetch_character_via_graphql(id)
+      graphql_url = GRAPHQL_URL || ENV['HIVEMIND_API_URL'] || ENV['GRAPHQL_API_URL'] || 'http://localhost:3000/graphql'
+      query = build_character_query(id_extracted(id))
+
+      begin
+        conn = HivemindMCP::RequestContext.authenticated_connection(graphql_url)
+        response = conn.post('') do |req|
+          req.body = { query: query }
+        end
+
+        if response.success?
+          data = response.body.dig('data', 'character')
+          if data
+            {
+              id: data['id'],
+              name: data['name'],
+              alternateNames: Array(data['alternateNames']),
+              tags: Array(data['tags']),
+              public: data['public'],
+              facts: Array(data['facts']).map { |f| f['fact'] },
+              source: 'graphql'
+            }
+          else
+            errors = response.body['errors']&.map { |e| e['message'] }&.join(', ')
+            { error: "Character not found#{errors ? " (#{errors})" : ""}" }
+          end
+        else
+          { error: "GraphQL request failed: #{response.status} #{response.reason_phrase}" }
+        end
+      rescue StandardError => e
+        { error: "Error fetching character via GraphQL: #{e.message}" }
+      end
+    end
+
 
     def id_extracted(id)
       # handle both raw UUID and Rails Global ID formats
@@ -29,36 +81,6 @@ module HivemindMCP
       else
         id
       end
-    end
-
-    def serialize_character(record)
-      id = "gid://hivemind/Character/#{record.id}"
-      name = record.name
-      alternate_names = Array(record.alternate_names).map(&:to_s)
-      tags = Array(record.tags).map(&:to_s)
-      public_flag = !!record.public
-      facts = Array(record.respond_to?(:facts) ? record.facts : [])
-                .map { |f| f.respond_to?(:fact) ? f.fact : f.to_s }
-
-      template = <<~ERB
-      ===== Character =====
-      ID: <%= id %>
-      Name: <%= name %>
-      Alternate Names: <%= alternate_names.join(", ") %>
-      Tags: <%= tags.join(", ") %>
-      Public: <%= public_flag ? "Yes" : "No" %>
-      Facts:
-      <% if facts.empty? %>
-        - (none)
-      <% else %>
-      <% facts.each do |fact| %>
-        - <%= fact %>
-      <% end %>
-      <% end %>
-      =====================
-      ERB
-
-      ERB.new(template, trim_mode: '-').result(binding)
     end
   end
 end

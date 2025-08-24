@@ -28,6 +28,7 @@ module Types
 
     field :conversations, resolver: Resolvers::ConversationsResolver
     field :characters, resolver: Resolvers::CharactersResolver
+    field :available_models, resolver: Resolvers::AvailableModelsResolver
     # field :users, resolver: Resolvers::UsersResolver
     # field :personas, resolver: Resolvers::PersonasResolver
     # field :user, resolver: Resolvers::UserResolver

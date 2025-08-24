@@ -2,12 +2,14 @@
 
 require 'rspec'
 require 'webmock/rspec'
+require 'json'
 
 ENV['RACK_ENV'] = 'test'
 ENV['HIVEMIND_API_URL'] ||= 'http://localhost:3000/graphql'
 ENV['HIVEMIND_API_TOKEN'] ||= 'dev-token'
 
-WebMock.disable_net_connect!(allow_localhost: true)
+# Disable real network connections during tests
+WebMock.disable_net_connect!(allow_localhost: false)
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

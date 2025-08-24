@@ -22,3 +22,6 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+!python server.py --model_name tts_models/en/ljspeech/tacotron2-DDC --use_cuda True
+vocoder_models/en/ljspeech/hifigan_v2
