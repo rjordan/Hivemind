@@ -82,7 +82,7 @@ const TopBar = () => {
               🔐 Login
             </button>
           }>
-            <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👥 Characters</a>
+            <a href="/characters" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👥 Characters</a>
             <a href="/conversations" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>💬 Conversations</a>
             <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>👤 Personas</a>
             <a href="#" class="topbar__mobile-nav-link" onClick={closeMobileMenu}>⚙️ Settings</a>

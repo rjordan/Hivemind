@@ -12,8 +12,8 @@ vi.mock('../config.json', () => ({ default: { apiBaseUrl: 'http://localhost:3000
 const getCharactersMock = vi.fn(async (_token: string | null) => ({
   characters: {
     edges: [
-      { node: { id: '1', name: 'Neo', alternateNames: ['The One'], tags: ['hero'], traits: [], createdAt: '', updatedAt: '' } },
-      { node: { id: '2', name: 'Trinity', alternateNames: [], tags: ['ally'], traits: [], createdAt: '', updatedAt: '' } },
+      { node: { id: '1', name: 'Neo', alternateNames: ['The One'], tags: ['hero'], facts: [], createdAt: '', updatedAt: '' } },
+      { node: { id: '2', name: 'Trinity', alternateNames: [], tags: ['ally'], facts: [], createdAt: '', updatedAt: '' } },
     ],
     pageInfo: { hasNextPage: false, hasPreviousPage: false, startCursor: '', endCursor: '' }
   }

@@ -46,13 +46,13 @@ RSpec.describe Character, type: :model do
       expect(Character.reflect_on_association(:conversations).macro).to eq(:has_many)
     end
 
-    it 'has many traits' do
-  expect(character).to respond_to(:facts)
-  expect(Character.reflect_on_association(:facts).macro).to eq(:has_many)
+    it 'has many facts' do
+      expect(character).to respond_to(:facts)
+      expect(Character.reflect_on_association(:facts).macro).to eq(:has_many)
     end
 
-    it 'destroys dependent traits when character is deleted' do
-  fact = character.facts.create!(fact: 'friendly')
+    it 'destroys dependent facts when character is deleted' do
+      fact = character.facts.create!(fact: 'friendly')
   expect { character.destroy }.to change { CharacterFact.count }.by(-1)
     end
 

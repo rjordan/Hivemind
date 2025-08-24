@@ -71,10 +71,10 @@
 }
 
 /* Grid layouts */
-@mixin grid-responsive($min-width: 300px) {
+@mixin grid-responsive($min-width: 300px, $gap: $spacing-6) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
-  gap: $spacing-6;
+  gap: $gap;
 }
 
 /* Mobile-first breakpoints */

@@ -1,4 +1,4 @@
-// Shared UI types for API models and GraphQL results
+// Shared UI types for GraphQL results
 
 export interface User {
   id: string
@@ -19,17 +19,20 @@ export interface Conversation {
   updatedAt: string
 }
 
-interface CharacterTrait {
-  traitType: string
-  value: string
+export interface CharacterFact {
+  id: string
+  fact: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Character {
   id: string
   name: string
+  description?: string
   alternateNames: string[]
   tags: string[]
-  traits: CharacterTrait[]
+  facts: CharacterFact[]
   createdAt: string
   updatedAt: string
 }

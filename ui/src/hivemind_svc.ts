@@ -1,6 +1,6 @@
 import { gql } from '@solid-primitives/graphql'
 import config from './config.json'
-import type { ConversationsQuery, User, CharactersQuery } from './types'
+import type { ConversationsQuery, User, CharactersQuery, Character } from './types'
 
 const HIVEMIND_API_URL = `${config.apiBaseUrl}/graphql`
 
@@ -35,11 +35,14 @@ const GET_CHARACTERS = gql`
         node {
           id
           name
+          description
           alternateNames
           tags
-          traits {
-            traitType
-            value
+          facts {
+            id
+            fact
+            createdAt
+            updatedAt
           }
           createdAt
           updatedAt
@@ -78,6 +81,37 @@ const GET_CURRENT_USER = gql`
         title
         scenario
       }
+    }
+  }
+`
+
+const GET_AVAILABLE_MODELS = gql`
+  query {
+    availableModels
+  }
+`
+
+const CREATE_CHARACTER_MUTATION = gql`
+  mutation CreateCharacter($input: CreateCharacterInput!) {
+    createCharacter(input: $input) {
+      character {
+        id
+        name
+        description
+        alternateNames
+        tags
+        defaultModel
+        public
+        facts {
+          id
+          fact
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      errors
     }
   }
 `
@@ -130,4 +164,41 @@ export const getCharacters = async (authToken: string | null, includePublic: boo
     },
   }
   return { characters }
+}
+
+export const getAvailableModels = async (authToken: string | null): Promise<string[]> => {
+  const response = await sendGraphQLQuery(authToken, GET_AVAILABLE_MODELS)
+  return response?.availableModels || []
+}
+
+export interface CreateCharacterInput {
+  name: string
+  description: string
+  alternateNames: string[]
+  tags: string[]
+  defaultModel: string
+  isPublic: boolean
+}
+
+export interface CreateCharacterResult {
+  character?: Character
+  errors: string[]
+}
+
+export const createCharacter = async (authToken: string | null, input: CreateCharacterInput): Promise<CreateCharacterResult> => {
+  const response = await sendGraphQLQuery(authToken, CREATE_CHARACTER_MUTATION, {
+    input: {
+      name: input.name,
+      description: input.description,
+      alternateNames: input.alternateNames,
+      tags: input.tags,
+      defaultModel: input.defaultModel,
+      public: input.isPublic
+    }
+  })
+
+  return {
+    character: response?.createCharacter?.character,
+    errors: response?.createCharacter?.errors || []
+  }
 }
