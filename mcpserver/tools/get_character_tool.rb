@@ -17,7 +17,7 @@ module HivemindMCP
 
     def call(id:)
       result = fetch_character_via_graphql(id)
-      return result.to_json
+      result.to_json
     end
 
     private

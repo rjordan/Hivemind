@@ -41,8 +41,8 @@ RSpec.describe Mutations::CreateCharacter, type: :request do
           input: {
             name: "Gandalf",
             description: "A wise wizard",
-            alternateNames: ["Mithrandir", "The Grey Pilgrim"],
-            tags: ["wizard", "fantasy", "wise"],
+            alternateNames: [ "Mithrandir", "The Grey Pilgrim" ],
+            tags: [ "wizard", "fantasy", "wise" ],
             public: true,
             defaultModel: "llama3.2"
           }
@@ -60,8 +60,8 @@ RSpec.describe Mutations::CreateCharacter, type: :request do
         character_data = result['data']['createCharacter']['character']
         expect(character_data['name']).to eq('Gandalf')
         expect(character_data['description']).to eq('A wise wizard')
-        expect(character_data['alternateNames']).to eq(['Mithrandir', 'The Grey Pilgrim'])
-        expect(character_data['tags']).to eq(['wizard', 'fantasy', 'wise'])
+        expect(character_data['alternateNames']).to eq([ 'Mithrandir', 'The Grey Pilgrim' ])
+        expect(character_data['tags']).to eq([ 'wizard', 'fantasy', 'wise' ])
         expect(character_data['public']).to be true
         expect(character_data['defaultModel']).to eq('llama3.2')
         expect(character_data['user']['id']).to be_present

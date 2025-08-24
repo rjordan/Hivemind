@@ -21,8 +21,8 @@ RSpec.describe HivemindMCP::GetCharacterTool do
             'character' => {
               'id' => character_id,
               'name' => 'Trinity',
-              'alternateNames' => ['Hack Queen'],
-              'tags' => ['ops'],
+              'alternateNames' => [ 'Hack Queen' ],
+              'tags' => [ 'ops' ],
               'public' => true,
               'facts' => [
                 { 'fact' => 'Expert hacker' },
@@ -53,10 +53,10 @@ RSpec.describe HivemindMCP::GetCharacterTool do
         expect(result).to include(
           'id' => character_id,
           'name' => 'Trinity',
-          'alternateNames' => ['Hack Queen'],
-          'tags' => ['ops'],
+          'alternateNames' => [ 'Hack Queen' ],
+          'tags' => [ 'ops' ],
           'public' => true,
-          'facts' => ['Expert hacker', 'Works for the resistance'],
+          'facts' => [ 'Expert hacker', 'Works for the resistance' ],
           'source' => 'graphql'
         )
       end
@@ -66,7 +66,7 @@ RSpec.describe HivemindMCP::GetCharacterTool do
       let(:error_response) {
         {
           'data' => { 'character' => nil },
-          'errors' => [{ 'message' => 'Character not found' }]
+          'errors' => [ { 'message' => 'Character not found' } ]
         }
       }
 
